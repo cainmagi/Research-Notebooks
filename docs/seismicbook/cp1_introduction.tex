@@ -1,0 +1,70 @@
+\chapterimage{chap1.jpg} % Chapter heading image
+\chapter{引论}
+
+石油勘探开始于\emph{地震探测(Seismic Soundings)}。由于岩石的体积远大于碳氢化合物的体积，油气的存在几乎不能影响到反射结果。但是，通过判断地层的形状，有丰富的经验可以推测出油气的位置。鉴于\emph{地震探测}成本比实际开采低得多，它的应用价值随着技术的进步越加显明出来。
+
+该领域的研究主要基于以下几点：
+
+\begin{enumerate}
+  \item \textbf{数据的重复性}: 数据呈高密度的磁信号窄带分布（magnetic tapes），这些数据可以经过大量可重复实验。
+  \item \textbf{计算机作为成像设备}: 计算机图像受数学、物理学和统计学理解的限制。但（1984年）现有的计算机容量完全可以应对地震波。
+\end{enumerate}
+
+\section{我们要讨论的问题}
+考虑到如下形式的问题（注意参数和输出均有可能是矩阵）。
+
+\begin{problem}[普适优化问题] \label{def:c1:common}
+  \begin{subequations}
+  	\renewcommand{\theequation}
+  	{\theparentequation-\arabic{equation}}
+  	\begin{align}
+  	  \min~&f_0 (x),\label{fml:c1:common}\\ 
+  	  s.t.~&f_i (x) \leqslant b_i,~i=1,~\ldots,~m. \label{fml:c1:commonconst}
+  	\end{align}
+  \end{subequations}
+\end{problem}
+
+如果对任意的$i=0,~1,~\ldots,~m$，均有
+
+\begin{align} \label{fml:c1:commonconvex}
+	f_i(\alpha x + \beta y) \leqslant \alpha f_i(x) + \beta f_i(y).
+\end{align}
+
+这样的问题称为\emph{凸(Convex)问题}，如果\eqref{fml:c1:commonconvex}中的不等号方向反向，这样的问题就称为\emph{凹(Concave)问题}。凸/凹问题本质上都可以用相同的方式解出，特别地，如果\eqref{fml:c1:commonconvex}中的不等号退化为等号，这样的问题就称为\emph{线性问题}。
+
+\section{两个经典问题}
+
+\subsection{最小平方问题}
+\label{c1:minsquare}
+
+考虑存在列向量$x$，一个最小平方问题可以描述为：
+
+\begin{problem}[最简的最小平方问题] \label{def:c1:minsquare}
+	\begin{align} \label{fml:c1:minsquare}
+		\min\limits_{\mathbf{x}} f_0(\mathbf{x}) = \min\limits_{\mathbf{x}} {\lVert \mathbf{A}\mathbf{x} - \mathbf{b} \rVert}^2_2.
+	\end{align}
+\end{problem}
+
+如此，只需对$f_0$求取梯度，即可得到所需的最优解$x^{\ast}$，有如下推导
+
+\begin{equation}\label{fml:c1:reviseA}
+	\mathbf{A} = \left[
+	\begin{array}{c}
+		 \mathbf{a}^T_1 \\
+		 \mathbf{a}^T_2 \\
+		 \vdots \\
+		 \mathbf{a}^T_n \\
+	\end{array}
+	\right].
+\end{equation}
+
+\begin{problem}[较一般的线性规划问题] \label{def:c1:minlinear}
+	\begin{subequations}
+		\renewcommand{\theequation}
+		{\theparentequation-\arabic{equation}}
+		\begin{align}
+		\min\limits_{\mathbf{x}}~&\mathbf{c}^T\mathbf{x},\label{fml:c1:minlinear}\\ 
+		s.t.~&\mathbf{a}_i^T\mathbf{x} \leqslant b_i,~i=1,~\ldots,~m. \label{fml:c1:minlinearconst}
+		\end{align}
+	\end{subequations}
+\end{problem}

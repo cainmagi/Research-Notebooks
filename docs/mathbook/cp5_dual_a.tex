@@ -1,0 +1,727 @@
+\chapterimage{chap5.jpg} % Chapter heading image
+\chapter{对偶}
+\emph{对偶问题}，是解具有标准形式的限制条件的\emph{凸问题}的一个甚为有效的方法。本章从\emph{拉格朗日对偶问题(Lagrange Dual Problem)}入手，逐步讨论有关对偶性的一些理论和例证。
+
+\section{探讨矩阵分析}
+解\emph{拉格朗日对偶问题}时，有时会涉及到矩阵的\emph{\textit{Frobenius} norm}，而这一范数可以改写成矩阵的迹，因此，需要推导、理解一些对迹的运算。
+
+\begin{example}
+	考虑矩阵$\mathbf{X}$有$[M,~N]$的大小，且存在一个矩阵$\mathbf{A}$大小为$[N,~M]$，于是试求$\frac{\mathrm{d} \mathrm{Tr}(\mathbf{X} \mathbf{A}) }{\mathrm{d}\mathbf{X}}$的值。
+	
+	考虑展开迹成为元素的形式，
+	
+	\begin{equation}\label{fml:c5:MulTrDe1}
+		\begin{aligned}
+			\left(\frac{\mathrm{d}}{\mathrm{d}\mathbf{X}} \left( \mathrm{Tr}(\mathbf{X} \mathbf{A}) \right) \right)_{kl} = \frac{\mathrm{d}}{\mathrm{d}x_{kl}} \left( \sum\limits_{i=1}^{M}{ \sum\limits_{j=1}^{N}{ x_{ij} a_{ji} } } \right) = a_{lk}.
+		\end{aligned}
+	\end{equation}
+	
+	由于求导得到的矩阵形状和$\mathbf{X}$相同，易
+	
+	\begin{equation}\label{fml:c5:MulTrDe1-1}
+		\begin{aligned}
+			\frac{\mathrm{d} \mathrm{Tr}(\mathbf{X} \mathbf{A}) }{\mathrm{d}\mathbf{X}} = \mathbf{A}^T.
+		\end{aligned}
+	\end{equation}
+	
+	同时，由于$\mathrm{Tr}(A)=\mathrm{Tr}(A^T)$，可以推断出$\frac{\mathrm{d} \mathrm{Tr}(\mathbf{A} \mathbf{X}^T) }{\mathrm{d}\mathbf{X}} = \mathbf{A}$。
+\end{example}
+
+\begin{example}
+	考虑矩阵$\mathbf{X}$有$[M,~N]$的大小，且存在一个矩阵$\mathbf{A}$大小为$[N,~N]$，于是试求$\frac{\mathrm{d} \mathrm{Tr}(\mathbf{X} \mathbf{A} \mathbf{X}^T) }{\mathrm{d}\mathbf{X}}$的值。
+	
+	考虑展开迹成为元素的形式，
+	\begin{equation}\label{fml:c5:MulTrDe2}
+		\begin{aligned}
+		 f(\mathbf{X},~\mathbf{A}) = \left( \mathrm{Tr}(\mathbf{X} \mathbf{A} \mathbf{X}^T) \right)_{kl} = \sum\limits_{i=1}^{M}{ \sum\limits_{j=1}^{N}{ \sum\limits_{k=1}^{N}{ x_{ij} x_{ik} a_{jk} } } }.
+		\end{aligned}
+	\end{equation}
+	
+	可见，如果对\eqref{fml:c5:MulTrDe2}求取$x_{pq}$的导数，讨论$j,~k$可以分成三种情况：
+	
+	\begin{enumerate}[label=(\arabic*)]
+		\item $i=p,~j=k=q$: $\frac{\mathrm{d}f}{\mathrm{d} x_{pq}}|_{j=k=q}=\frac{\mathrm{d}a_{qq}x_{pq}^2}{\mathrm{d} x_{pq}}=2x_{pq}a_{qq}$.
+		\item $i=p,~j=q,~k \neq q$: $\frac{\mathrm{d}f}{\mathrm{d} x_{pq}}|_{j=q,~k \neq q}=\frac{\mathrm{d}\sum_{k=1,~k \neq q}^N x_{pq}x_{pk}a_{qk}}{\mathrm{d} x_{pq}}=\sum_{k=1,~k \neq q}^N x_{pk}a_{qk}$.
+		\item $i=p,~j \neq q,~k=q$: $\frac{\mathrm{d}f}{\mathrm{d} x_{pq}}|_{j \neq q,~k=q}=\frac{\mathrm{d}\sum_{j=1,~j \neq q}^N x_{pj}x_{pq}a_{jq}}{\mathrm{d} x_{pq}}=\sum_{j=1,~j \neq q}^N x_{pj}a_{jq}$.
+	\end{enumerate}
+	
+	合并(1)(2)(3)的值，可得：
+	
+	\begin{equation}\label{fml:c5:MulTrDe3}
+		\begin{aligned}
+			\frac{\mathrm{d}f}{\mathrm{d} x_{pq}} = \sum_{i=1}^N x_{pi}(a_{iq} + a_{qi}).
+		\end{aligned}
+	\end{equation}
+	
+	这恰恰是$\mathbf{X}(\mathbf{A}+\mathbf{A}^T)$位于的$p,~q$的元素，于是
+	
+	\begin{equation}\label{fml:c5:MulTrDe3-1}
+		\begin{aligned}
+			\frac{\mathrm{d} \mathrm{Tr}(\mathbf{X} \mathbf{A} \mathbf{X}^T) }{\mathrm{d}\mathbf{X}} = \mathbf{X}(\mathbf{A}+\mathbf{A}^T).
+		\end{aligned}
+	\end{equation}
+	
+	类似的推导还可以得到
+	
+	\begin{equation}\label{fml:c5:MulTrDe3-2}
+		\begin{aligned}
+			\frac{\mathrm{d} \mathrm{Tr}(\mathbf{X}^T \mathbf{A} \mathbf{X}) }{\mathrm{d}\mathbf{X}} = (\mathbf{A}+\mathbf{A}^T)\mathbf{X}.
+		\end{aligned}
+	\end{equation}
+	
+	注意$\mathbf{X}$和$\mathbf{A}$的尺寸，\eqref{fml:c5:MulTrDe3-2}并不等价于\ref{fml:c5:MulTrDe3-1}，但是推导过程相同，这是因为，\eqref{fml:c5:MulTrDe3-2}唯一的区别是，解元素所为契合的尺寸相当于\eqref{fml:c5:MulTrDe3-1}中的$\mathbf{X}^T$。
+	
+\end{example}
+
+\section{拉格朗日对偶问题}
+考虑一个优化问题的标准形式，
+\begin{problem}[普通优化问题] \label{def:c5:commonOpt}
+	\begin{subequations}
+		\renewcommand{\theequation}
+		{\theparentequation-\arabic{equation}}
+		\begin{align}
+		\min\limits_{x}~&f_0(x),\label{fml:c5:commonOpt}\\ 
+		s.t.~&f_i(x) \leqslant 0,~i=1,~\ldots,~m, \label{fml:c5:commonOptConst1}\\
+		&h_i(x) = 0,~i=1,~\ldots,~p. \label{fml:c5:commonOptConst2}
+		\end{align}
+	\end{subequations}
+\end{problem}
+
+显然，它不但是非线性的，还有可能是非凸的，甚至还有不止一种限制条件，这甚至为采用梯度下降法求取局部最优解都带来了困难。然而，如果我们设存在这样的函数：
+
+\begin{equation}\label{fml:c5:neg2inf}
+	I_-(u) = \left\{
+	\begin{array}{c    l}
+		0, &u \leqslant 0,\\
+		+\infty, &u > 0.
+	\end{array}
+	\right.
+\end{equation}
+
+以及这样的函数
+
+\begin{equation}\label{fml:c5:nonzero2inf}
+	I_0(u) = \left\{
+	\begin{array}{c    l}
+		0, &u = 0,\\
+		+\infty, &u \neq 0.
+	\end{array}
+	\right.
+\end{equation}
+
+就可以将原问题的限制条件写入到目标中，从而改写成
+
+\begin{equation}\label{fml:c5:commonOptRev1}
+	\begin{aligned}
+		\min\limits_{x}~&f_0(x)+\sum_{i}{I_-(f_i(x))}+\sum_{i}{I_0(h_i(x))}.
+	\end{aligned}
+\end{equation}
+
+显然，不在可行域\footnote{\textbf{可行域}：满足$x$符合限制条件的取值范围}内，\eqref{fml:c5:commonOptRev1}必定导出$+\infty$。因此，该问题的最小值解必定限定在可行域内（尽管未必是最优解）。
+
+然而，\eqref{fml:c5:commonOptRev1}并无实用价值，因为$I_-,~I_0$均是不可微的函数，从而无法优化。为了解决这个问题，可以考虑对它们进行松弛，设存在松弛变量$\lambda_i,~\mu_i$，于是有\emph{拉格朗日函数}：
+
+\begin{subequations}
+	\renewcommand{\theequation}
+	{\theparentequation-\arabic{equation}}
+	\begin{align}
+		\mathcal{L}(x,~\bm{\lambda},~\bm{\mu})&=f_0(x)+\sum\limits_{i=1}^{m}{\lambda_i f_i(x)}+\sum\limits_{i=1}^{p}{\mu_i h_i(x)}, \label{fml:c5:lagrangeFunc}\\
+		s.t.~&\lambda_i \geqslant 0,~\mu_i \in \mathbb{R}.\label{fml:c5:lagrangeFuncConst}
+	\end{align}
+\end{subequations}
+
+可见，假设$x$已经确定，$\mathcal{L}$势必成为仅仅和$\bm{\lambda},~\bm{\mu}$有关的函数，此时所有的$f_i$和$h_i$也都成为了定值，从而易知$\mathcal{L}$成为对$\bm{\lambda},~\bm{\mu}$的线性函数。
+
+因此，考虑若$f_i(x)>0$，必定$\exists \lambda_i=+\infty$使得$\mathcal{L}=+\infty$；同理，若$h_i(x) \neq 0$，必定$\exists \mu_i=\mathrm{sign}(h_i(x))\times(+\infty)$使得$\mathcal{L}=+\infty$。
+
+反之，若有$\forall~i,~f_i(x) \leqslant 0,~h_i(x)=0$，则此时$\max\{\lambda_i f_i(x)\}=0$，且$\mu_i h_i(x) \equiv 0$。
+
+故而，可以想到，
+
+\begin{equation}\label{fml:c5:maxLUlagrange}
+	\max\limits_{\bm{\lambda},~\bm{\mu}}~\mathcal{L}(\bm{\lambda},~\bm{\mu}) = \left\{
+	\begin{array}{c    l}
+		f_0(x), &\forall i,~f_i(x) \leqslant 0,~h_i(x)=0,\\
+		+\infty, &\exists i,~f_i(x)>0~\mathrm{or}~h_i(x) \neq 0.
+	\end{array}
+	\right.
+\end{equation}
+
+可见，记\eqref{fml:c5:maxLUlagrange}的值为$p(x)$，
+
+\begin{equation}\label{fml:c5:eqlagrange}
+	\begin{aligned}
+		\max\limits_{\bm{\lambda},~\bm{\mu}}~\mathcal{L}(\bm{\lambda},~\bm{\mu}) &= p(x),\\ 
+		p(x) &= f_0(x)+\sum_{i}{I_-(f_i(x))}+\sum_{i}{I_0(h_i(x))}.
+	\end{aligned}
+\end{equation}
+
+$p(x)$反映了，对确定的$x$，$\mathcal{L}$的最大值即理想问题\eqref{fml:c5:commonOptRev1}的值。因此，可以用$\min\limits_x p(x)$来代替原问题的解。我们称这个解为$p^{\ast}$。
+
+上述推导表明，$\mathcal{L}$可以通过先最大化参数$\bm{\lambda},~\bm{\mu}$，后最小化自变量$x$这样的顺序，达到对\autoref{def:c5:commonOpt}的严格等价。然而，它仍然是一个不可微的问题，因为$\max\limits_{\bm{\lambda},~\bm{\mu}}~\mathcal{L}$完全有可能取到$+\infty$。因此，我们需要重新考虑对$\mathcal{L}$的处理。
+
+首先，需要假设的是，可行域的限制条件都是有效的。什么是有效的呢？一言以蔽之，就是这些限制条件本身要有全部成立的可能，亦即记可行域为$\mathcal{D}$，则$\forall~x_0 \in \mathcal{D},~\forall~i,~f_i(x_0) \leqslant 0,~h_i(x_0)=0$。否则，就永远找不到可行域内的解，这样问题就变成了无解的问题。
+
+既然这些限制条件满足有效，就表明，
+
+\begin{subequations}
+	\renewcommand{\theequation}
+	{\theparentequation-\arabic{equation}}
+	\begin{align}
+	\because~&\forall \bm{\lambda},~\bm{\mu},~f_0(x_0) + \sum_{i=1}^m{\lambda_i f_i(x_0)} + \sum_{i=1}^p{\mu_i h_i(x_0)} = f_0(x_0) + \sum_{i=1}^m{\lambda_i f_i(x_0)} \leqslant f_0(x_0), \label{fml:c5:lagrangeDConst1} \\
+	\therefore~&\forall \bm{\lambda},~\bm{\mu},~\min\limits_{x}~f_0(x) + \sum_{i=1}^m{\lambda_i f_i(x)} + \sum_{i=1}^p{\mu_i h_i(x)} \leqslant \min\limits_{x \in \mathcal{D}} f_0(x) = p^{\ast} \label{fml:c5:lagrangeDConst2}.
+	\end{align}
+\end{subequations}
+
+$x$不限于在$\mathcal{D}$，但因为$x \in \mathcal{D}$时\eqref{fml:c5:lagrangeDConst2}就必然成立，故而\eqref{fml:c5:lagrangeDConst2}恒成立。这表明，如果先对$\mathcal{L}$最小化自变量$x$，再对$\mathcal{L}$最大化参数$\bm{\lambda},~\bm{\mu}$，必然有：
+
+\begin{equation}\label{fml:c5:lagrangeDual}
+	\begin{aligned}
+		\max\limits_{\bm{\lambda},~\bm{\mu}}\min_{x}~\mathcal{L}(x,~\bm{\lambda},~\bm{\mu}) \leqslant \min\limits_{x \in \mathcal{D}} f_0(x) = \min_x\max\limits_{\bm{\lambda},~\bm{\mu}}~\mathcal{L}(x,~\bm{\lambda},~\bm{\mu}).
+	\end{aligned}
+\end{equation}
+
+这个不等式左侧是一个优化问题，我们称之为\emph{拉格朗日对偶问题}；而右侧是考虑限制条件下，优化目标的最小值。在可行域内，\eqref{fml:c5:lagrangeDConst2}恒成立，但可行域外，\eqref{fml:c5:lagrangeDConst2}也有可能成立（因为$\bm{\lambda},~\bm{\mu}$需要在求对$x$的最小时先给定）。故而，\emph{对偶问题}的解既必定可以取可行域内最小值的解，也可能取可行域外的、某个比可行域内最小值还要小的解，这是因为，这个解本身是在全域的$x$上定义的。
+
+综上，为了便于识读，定义\emph{对偶问题}的解的函数值为$d^{\ast}$，于是可以写成如下的对偶形式：
+
+\begin{problem}[拉格朗日对偶问题] \label{def:c5:lagrangeDual}
+	\begin{subequations}
+		\renewcommand{\theequation}
+		{\theparentequation-\arabic{equation}}
+		\begin{align}
+			&d^{\ast} = \max\limits_{\bm{\lambda},~\bm{\mu}}\min_{x}~\mathcal{L}(x,~\bm{\lambda},~\bm{\mu}) \leqslant \min_x\max\limits_{\bm{\lambda},~\bm{\mu}}~\mathcal{L}(x,~\bm{\lambda},~\bm{\mu}) = p^{\ast}. \label{fml:c5:lagrangeDualWell}\\
+			s.t.~&\mathcal{L}(x,~\bm{\lambda},~\bm{\mu})=f_0(x)+\sum\limits_{i=1}^{m}{\lambda_i f_i(x)}+\sum\limits_{i=1}^{p}{\mu_i h_i(x)}, \label{fml:c5:lagrangeDualFunc}\\
+			&\forall i,~\lambda_i \geqslant 0,~\mu_i \in \mathbb{R}.\label{fml:c5:lagrangeDualFuncConst}
+		\end{align}
+	\end{subequations}
+\end{problem}
+
+\eqref{fml:c5:lagrangeDualWell}显示了，\emph{对偶问题}昭示了原问题的下界。它的最小值$d^{\ast}$一定小于等于可行域内的最小值$p^{\ast}$，但不一定等于全域的最小值。换言之，$d^{\ast}$在全域最小值和可行域最小值之间，它的解不一定在\emph{可行域内}。
+
+\autoref{fig:cp5:lagbound}分别展示了两种情形下\emph{拉格朗日对偶问题}的求解过程。在该情形下，只有一个$f_1(x) \leqslant 0$的限制条件，且该限制条件是一个将可行域限制在约$x\in[25,~75]$之间的开口向上的二次函数。其中图(a)收敛到了最优解，但图(b)没有收敛到最优解，下面将会探讨在什么情况下，\emph{对偶问题}能收敛到最优解，即$d^{\ast}=p^{\ast}$。
+
+\begin{figure}[htbp]
+	\centering
+	\begin{minipage}[b]{0.48\textwidth}
+		\subfigure[下界最优]{
+			\animategraphics[controls, palindrome, width=0.9\columnwidth]{24}{\PicFolder cp5_lag1/Lagrange1_frame_}{1}{101}
+		}
+	\end{minipage}
+	\begin{minipage}[b]{0.48\textwidth}
+		\subfigure[下界非最优]{
+			\animategraphics[controls, palindrome, width=0.9\columnwidth]{24}{\PicFolder cp5_lag2/Lagrange_frame_}{1}{101}
+		}
+    \end{minipage}
+	\DeclareGraphicsExtensions.
+	\caption{拉格朗日对偶问题下界收敛范例。}
+	\label{fig:cp5:lagbound}
+\end{figure}
+
+\section{稀疏编码}
+\emph{稀疏编码(Sparse Coding)}是一个典型的\emph{对偶问题}求解过程。作为广泛应用在图像处理领域的一个工具，形式最简单的\emph{稀疏编码问题}也需要进行一些预处理工作。为了以便人能理解它的物理含义，尽管它可能和问题本身没有太大的联系，但本节还是对其进行了叙述，它可以描述成如下过程：
+
+\begin{figure}[H]
+	\centering
+	\includeMNBgraph[width = 0.7\columnwidth]{cp5_SparseProcess.eps}
+	\DeclareGraphicsExtensions.
+	\caption{稀疏编码的预处理过程。}
+	\label{fig:cp5:sparseproc}
+\end{figure}
+
+\begin{enumerate}[label=(\arabic*)]
+	\item 如\autoref{fig:cp5:sparseproc}所示，首先将原图$G$按位置、通过滑动窗口的方法拆解成\emph{片(Patch)}的集合；
+	\item 对每个Patch，将其分别展平成一条维数等于像素总数的向量（向量化）。这样的向量集合称为输入集$\mathbf{X}$；
+	\item 构建$K$个字典向量，这些向量的集合称为字典$\mathbf{D}$，每条向量的维数和Patch的维数相同，用随机取出的Patch或其他随机数等方式初始化数值。字典向量的数目$K$人为决定；
+	\item 构建字典-Patch编码关系，每个Patch对应一组编码，编码向量记为$\bm{\alpha}_i$，向量的维数为$K$；
+	\item 至此，开始本节所进行的训练过程。
+\end{enumerate}
+
+首先，通过以上步骤，我们可以了解到我该问题包括哪些物理量：
+
+\begin{table}[htbp]
+	\centering
+	\normalsize
+	\caption{稀疏编码的参量说明}
+	\begin{tabular}{|m{3.5em}<{\centering}|m{0.5\columnwidth}|m{3em}<{\centering}|}
+		\hline
+		\textbf{符号} & \makebox[0.5\columnwidth][c]{\textbf{描述}} & \textbf{维数} \\ \hline
+		$D$ & Patch向量化后的维数，只与Patch的大小有关 & -\\ \hline
+		$K$ & 构建的字典向量数目，人为设定 & -\\ \hline
+		$N$ & Patch的数目，与输入图像G的大小有关 & -\\ \hline
+		$\mathbf{X}$ & 一次训练的输入集，不一定来自同一原图$G$ & $D \times N$  \\ \hline
+		$\mathbf{x}_{i}$ & 输入集的一个样本（Patch向量）  & $D \times 1$ \\ \hline
+		$\mathbf{D}$ & 包括 $K$ 个字典向量的字典总集 （注意$K \gg N$） & $D \times K$\\ \hline
+		$D(:,k)$ & 第$k^{th}$条字典向量  & $D\times1$\\ \hline
+		$\bm{\alpha}_{i}$ & 与第$i^{th}$个样本$\mathbf{x}_i$对应的稀疏编码 & $K\times1$\\ \hline
+		$\lambda$ & 控制稀疏性的罚参量，同时影响到保真度 & -\\ \hline
+	\end{tabular}
+	\label{tab:cp5:spparameter}
+\end{table}
+
+可见，\emph{稀疏编码}实质上是将$D$维数的Patch转移到$K$维数的过程。看起来，这似乎可以理解成用字典压缩编码数据，但实际上这种理解是似是而非的。因为，实际操作中为了保证能恢复出原图，需要取较大的$K$，这个数额至少会大于$D$。可见，由于$N$一般很大，一个原图产生的所有$\bm{\alpha}_i$集合本身就是一个巨大的矩阵了，如果它不是稀疏的，在计算复杂度上都会带来不可忽视的开销（哪怕是多项式时间的算法）。
+
+训练\emph{稀疏编码}的算法有很多种，在本节中，介绍基于\emph{凸优化}和\emph{对偶问题}的方法。
+
+\subsection{解对偶问题训练字典}
+训练字典的过程，可以按照\autoref{tab:cp5:spparameter}描述成如下问题：
+
+\begin{problem}[稀疏编码的训练] \label{def:c5:sparseTrain}
+	\begin{subequations}
+		\renewcommand{\theequation}
+		{\theparentequation-\arabic{equation}}
+		\begin{align}
+			\min\limits_{\mathbf{D}, {\{\bm{\alpha}_i\}}_{i=1}^{N}}~&{\sum_{i=1}^{N} {\lVert \mathbf{x}_i - \mathbf{D}\bm{\alpha}_i \rVert}_2^2 + \lambda {\lVert \bm{\alpha}_i \rVert}_1}, \label{fml:c5:sparseTrain}\\
+			\textrm{s.t.}~&{\lVert D(:,k) \rVert}_2 \leqslant 1,~\forall k \in \{1,2,\ldots,K\}. \label{fml:c5:sparseTrainConst}
+		\end{align}
+	\end{subequations}
+\end{problem}
+
+如此相似，不是吗？它的形式，和\autoref{c1:minsquare}介绍的\emph{最小平方}形式相若，所不同的是，\autoref{def:c1:minsquare}中的$\mathbf{A}$（此处对应的是$\mathbf{D}$）是已知的定值，但此处$\mathbf{D}$同样需要训练。
+
+此外，还追加了一个限制条件\eqref{fml:c5:sparseTrainConst}，这个限制条件是什么意思呢？原来，如果不限制单个字典向量的$l_2$-norm，就有无数组$\mathbf{D}$能和$\bm{\alpha}_i$形成相同的矩阵积；而由于$l_2$-norm的作用，为了使$\bm{\alpha}_i$无限制地小，会使$\mathbf{D}$无限制地大，这就不是我们所期望看到的了！因此，加上了这样一个限制$l_2$-norm的条件。但是，由于$\bm{\alpha}_i$总是倾向于足够小，实际操作中$\mathbf{D}$的单个字典向量的$l_2$-norm往往为1（我们所设定的最大值）。
+
+\subsubsection{Lasso问题的解析解}
+\label{c5:Lasso}
+由于该问题中存在两个互相耦合的自变量$\mathbf{D},~{\{\bm{\alpha}_i\}}_{i=1}^{N}$，常规的做法是：在一个步长里，先固定其中一个，训练另外一个变量；接下来固定另外一个，训练之前固定的这个变量。我们先考虑简单的场合，即固定$\mathbf{D}$的情况：
+
+\begin{problem}[Lasso问题] \label{def:c5:Lasso}
+	\begin{subequations}
+		\renewcommand{\theequation}
+		{\theparentequation-\arabic{equation}}
+		\begin{align}
+			\min\limits_{{\{\bm{\alpha}_i\}}_{i=1}^{N}}~&{\sum_{i=1}^{N} \left({\lVert \mathbf{x}_i - \mathbf{D}\bm{\alpha}_i \rVert}_2^2 + \lambda {\lVert \bm{\alpha}_i \rVert}_1 \right)}. \label{fml:c5:Lasso}
+		\end{align}
+	\end{subequations}
+\end{problem}
+
+注意由于$\mathbf{D}$的固定，限制条件\eqref{fml:c5:sparseTrainConst}变得与${\{\bm{\alpha}_i\}}_{i=1}^{N}$无关，从而转换成一个无限制条件的问题，直接求取梯度，于是，
+
+\begin{equation}\label{fml:c5:LassoSolu}
+	\begin{aligned}
+		\frac{\mathrm{d}}{\mathrm{d}\bm{\alpha}_k} \left(\sum_{i=1}^{N} \left({\lVert \mathbf{x}_i - \mathbf{D}\bm{\alpha}_i \rVert}_2^2 + \lambda {\lVert \bm{\alpha}_i \rVert}_1 \right) \right) &= \frac{\mathrm{d}}{\mathrm{d}\bm{\alpha}_k} \left( {\lVert \mathbf{x}_k - \mathbf{D}\bm{\alpha}_k \rVert}_2^2 + \lambda {\lVert \bm{\alpha}_k \rVert}_1 \right) \\
+		&= \frac{\mathrm{d}}{\mathrm{d}\bm{\alpha}_k} \left( (\mathbf{x}_k - \mathbf{D}\bm{\alpha}_k)^T(\mathbf{x}_k - \mathbf{D}\bm{\alpha}_k) \right) + \lambda\mathrm{sign}(\bm{\alpha}_k)\\
+		&= \frac{\mathrm{d}}{\mathrm{d}\bm{\alpha}_k} \left( -2\bm{\alpha}_k^T\mathbf{D}^T\mathbf{x}_k + \bm{\alpha}_k^T\mathbf{D}^T\mathbf{D}\bm{\alpha}_k \right) + \lambda\mathrm{sign}(\bm{\alpha}_k)\\
+		&= -2 \mathbf{D}^T\mathbf{x}_k + 2 \mathbf{D}^T\mathbf{D} \bm{\alpha}_k + \lambda \mathrm{sign}(\bm{\alpha}_k) = 0.
+	\end{aligned}
+\end{equation}
+
+由于符号函数的存在，尽管我们无法写出\eqref{fml:c5:LassoSolu}的解析解，但求得其数值解仍然是简单的。换言之，$\bm{\alpha}_k$可以快速求解。
+
+\subsubsection{快速求取Lasso数值解}
+尽管\autoref{c5:Lasso}指出Lasso问题求数值解是快速的，但究竟能快到什么程度，还要依赖具体的算法。提出了一种求取Lasso数值解的快速算法。
+
+\eqref{fml:c5:LassoSolu}存在一个最大的不可解要素就是，$\mathrm{sign}(\bm{\alpha}_k)$在0处不可导。然而，0值恰恰是一个需要重点讨论的值，为了解决这个问题，可以假设一个变量$\bm{\theta}_k$，用来代替$\mathrm{sign}(\bm{\alpha}_k)$参与求解，于是，这个``伪解析解''是
+
+\begin{equation}\label{fml:c5:LassoSoluRelax}
+	\begin{aligned}
+		\bm{\alpha}_k = (\mathbf{D}^T\mathbf{D})^{-1}(\mathbf{D}^T\mathbf{x}_k-\frac{\lambda}{2}\bm{\theta}_k).
+	\end{aligned}
+\end{equation}
+
+\eqref{fml:c5:LassoSoluRelax}能代替解析解的情况有且仅有一种，即是$\bm{\theta}_k=\mathrm{sign}(\bm{\alpha}_k)$（$\theta \in \{0, 1, -1\}$）。代入到\eqref{fml:c5:LassoSolu}，可以得到
+
+\begin{equation}\label{fml:c5:LassoSoluRelax1}
+	\begin{aligned}
+		\frac{1}{\lambda}\frac{\mathrm{d} \mathrm{Lasso}}{\mathrm{d}\bm{\alpha}_k} &=  \mathrm{sign}\left((\mathbf{D}^T\mathbf{D})^{-1}(\mathbf{D}^T\mathbf{x}_k-\frac{\lambda}{2}\bm{\theta}_k)\right) - \bm{\theta}_k \\
+		&= \mathrm{sign}\left(\mathbf{D}^T\mathbf{x}_k-\frac{\lambda}{2}\bm{\theta}_k\right) - \bm{\theta}_k = \mathrm{sign}\left(\mathbf{y}_k-\lambda\bm{\theta}_k\right) - \bm{\theta}_k = 0.
+	\end{aligned}
+\end{equation}
+
+可见，为了使最小条件实现，\eqref{fml:c5:LassoSoluRelax1}必须对解的本身有所要求。具体来说，设向量$\mathbf{y}_k=2\mathbf{D}^T\mathbf{x}_k$，它恰好是${\lVert \mathbf{x}_k - \mathbf{D}\bm{\alpha}_k \rVert}_2^2$在假设$\bm{\alpha}_k$为0时的反向偏导。于是可知，在$\mathbf{y}_k>\lambda$的时候，对应有$\bm{\theta}_k=1$；在$\mathbf{y}_k<-\lambda$的时候，对应有$\bm{\theta}_k=-1$，这两种情况下，\eqref{fml:c5:LassoSoluRelax}都正是我们想要的解。
+
+于是，一个问题出现了，当$\mathbf{y}_k \in [-\lambda,~\lambda]$的时候该怎么办呢？\eqref{fml:c5:LassoSoluRelax1}告诉我们，在这种情况下，$\frac{\mathrm{d} \mathrm{Lasso}}{\mathrm{d}\bm{\alpha}_k}$不是$>0$就是$<0$，至少代入\eqref{fml:c5:LassoSoluRelax}的做法是不可取的，故而，让我们回到\eqref{fml:c5:LassoSolu}的结论。一旦$\bm{\alpha}_{k}>0$，第一项和第三项的和必定为正，而第二项由于$\bm{\alpha}_{k}>0$也取正，故$\frac{\mathrm{d} \mathrm{Lasso}}{\mathrm{d} \bm{\alpha}_{k}}>0$；反之，若$\bm{\alpha}_{k}<0$，第一项和第三项的和必定为负，而第二项也取负，同理，有，$\frac{\mathrm{d} \mathrm{Lasso}}{\mathrm{d} \bm{\alpha}_{k}}<0$。故而可知，在$\mathbf{y}_k \in [-\lambda,~\lambda]$的时候，尽管令$\bm{\alpha}_{k}=0$得到的并非0值，但它的$+$侧为正值，$-$侧为负值，仍然符合在$\bm{\alpha}_{k}=0$取到最小值。因此，$\bm{\alpha}_{k}$在许多情况下都可能收敛到0，这就实现了Lasso问题的稀疏性。
+
+值得注意的是，上述步骤中，都是针对向量进行讨论的。这只是为了方便表达，并不是在说，$\bm{\alpha}_{k}=0$全部都要取相同的值或者同号。事实上，如果把$\mathbf{D}$拆解成列向量，上述讨论就可以转换成针对第$p$列的元素讨论。实际操作中为了提高效率，可以取$\bm{\alpha}_{k}$的元素具有同性质（例如同号）的子集。
+
+综上，经过多番迭代，核心步骤只有两种，(1)考察所有$\alpha_{pk}=0$的元素，并按照\eqref{fml:c5:LassoSoluRelax}更新所有能令$|y_{pk}|>\lambda$的$\alpha_{pk}$；(2)考察所有其他元素，如果$|y_{pk}|<\lambda$，就令所有对应的$\alpha_{pk}=0$。
+
+\subsubsection{拉格朗日对偶法求字典}
+接下来考虑另一情况，即，固定${\{\bm{\alpha}_i\}}_{i=1}^{N}$，求解$\mathbf{D}$。这种情况下，限制条件\eqref{fml:c5:sparseTrainConst}不可忽视，这意味着我们必须运用\emph{对偶问题}来求解该问题；但另一方面，所幸的是由于${\{\bm{\alpha}_i\}}_{i=1}^{N}$成为了常数，稀疏项可以抹去。
+
+考虑到$l_1$-norm被去除了，书写${\{\bm{\alpha}_i\}}_{i=1}^{N}$这样的向量形式是很麻烦的，不妨设矩阵
+
+\begin{equation}\label{fml:c5:reviseAlpha}
+	\mathbf{A} = \left[
+	\begin{array}{c c c c}
+		\bm{\alpha}_1 & \bm{\alpha}_2 & \cdots & \bm{\alpha}_N
+	\end{array}
+	\right].
+\end{equation}
+
+于是，可以用矩阵的\textit{Frobenius} norm改写原问题，等效形式如下：
+
+\begin{problem}[有限制条件的字典优化] \label{def:c5:SpsDictionary}
+	\begin{subequations}
+		\renewcommand{\theequation}
+		{\theparentequation-\arabic{equation}}
+		\begin{align}
+			\min\limits_{\mathbf{D}}~&{\lVert \mathbf{X} - \mathbf{D}\mathbf{A}\rVert}^2_F, \label{fml:c5:SpsDictionary}\\
+			\textrm{s.t.}~&{\lVert D(:,k) \rVert}_2 \leqslant 1,~\forall k \in \{1,2,\ldots,K\}. \label{fml:c5:SpsDictionaryConst}
+		\end{align}
+	\end{subequations}
+\end{problem}
+
+考虑\eqref{def:c5:lagrangeDual}给出的解法，可以先写出\emph{拉格朗日函数}：
+
+\begin{equation}\label{fml:c5:SpsDicLag}
+	\begin{aligned}
+		\mathcal{L}(\mathbf{D},~\bm{\mu}) = {\lVert \mathbf{X} - \mathbf{D}\mathbf{A}\rVert}^2_F + \sum_{j=1}^{K}\mu_j\sum_{i=1}^{D}(D_{ij}^2-1).
+	\end{aligned}
+\end{equation}
+
+其中，\textit{Frobenius} norm可以被改写成矩阵的迹，于是
+
+\begin{equation}\label{fml:c5:SpsDicLag1}
+	\begin{aligned}
+		{\lVert \mathbf{X} - \mathbf{D}\mathbf{A}\rVert}^2_F &= \mathrm{Tr}((\mathbf{X} - \mathbf{D}\mathbf{A})(\mathbf{X} - \mathbf{D}\mathbf{A})^T) \\
+		&= \mathrm{Tr}(\mathbf{X}\mathbf{X}^T) + \mathrm{Tr}(\mathbf{D}\mathbf{A}\mathbf{A}^T\mathbf{D}^T) -  2\mathrm{Tr}(\mathbf{D}\mathbf{A}\mathbf{X}^T).
+	\end{aligned}
+\end{equation}
+
+设对角矩阵$\bm{\Lambda}=\mathrm{diag}(\{\mu_j\}_{j=1}^N)$，则剩余的部分同样也可以改写成矩阵的迹，于是
+
+\begin{equation}\label{fml:c5:SpsDicLag2}
+	\begin{aligned}
+		\sum_{j=1}^{K}\mu_j\sum_{i=1}^{D}(D_{ij}^2-1) &= \sum_{j=1}^{K}\mu_j\sum_{i=1}^{D}(D_{ij}^2) - \sum_{j=1}^{K}\mu_j\\
+		&= \mathrm{Tr}(\mathbf{D}\bm{\Lambda}\mathbf{D}^T - \bm{\Lambda}).
+	\end{aligned}
+\end{equation}
+
+\eqref{fml:c5:SpsDicLag}可以被改写成
+
+\begin{equation}\label{fml:c5:SpsDicLagM}
+	\begin{aligned}
+		\mathcal{L}(\mathbf{D},~\bm{\Lambda}) = \mathrm{Tr}(\mathbf{X}\mathbf{X}^T + \mathbf{D}\mathbf{A}\mathbf{A}^T\mathbf{D}^T -  2\mathbf{D}\mathbf{A}\mathbf{X}^T + \mathbf{D}\bm{\Lambda}\mathbf{D}^T - \bm{\Lambda}).
+	\end{aligned}
+\end{equation}
+
+于是，求对$\mathbf{D}$的梯度，有
+
+\begin{equation}\label{fml:c5:SpsDicLagMGrad}
+	\begin{aligned}
+		\frac{\mathrm{d}}{\mathrm{d}\mathbf{D}} \left( \mathcal{L}(\mathbf{D},~\bm{\Lambda}) \right) &= \frac{\mathrm{d}}{\mathrm{d}\mathbf{D}} \left( \mathrm{Tr}( \mathbf{D}\mathbf{A}\mathbf{A}^T\mathbf{D}^T -  2\mathbf{D}\mathbf{A}\mathbf{X}^T + \mathbf{D}\bm{\Lambda}\mathbf{D}^T \right)\\
+		&= 2\mathbf{D}\mathbf{A}\mathbf{A}^T - 2\mathbf{X}\mathbf{A}^T + 2\mathbf{D}\bm{\Lambda} = 0.\\
+		\mathbf{D} &= \mathbf{X}\mathbf{A}^T(\mathbf{A}\mathbf{A}^T+\bm{\Lambda})^{-1}.
+	\end{aligned}
+\end{equation}
+
+这是唯一解，在这里略去它是最小值解的证明。于是，代入$\mathbf{D}$到\eqref{fml:c5:SpsDicLagM}，有
+
+\begin{equation}\label{fml:c5:SpsDicLagMRevised}
+	\begin{aligned}
+		\min\limits_{\mathbf{D}}~\mathcal{L}(\mathbf{D},~\bm{\Lambda}) &= \mathrm{Tr}(\mathbf{X}\mathbf{X}^T + \mathbf{D}\mathbf{A}\mathbf{A}^T\mathbf{D}^T -  2\mathbf{D}\mathbf{A}\mathbf{X}^T + \mathbf{D}\bm{\Lambda}\mathbf{D}^T - \bm{\Lambda})\\
+		&= \mathrm{Tr}(\mathbf{X}\mathbf{X}^T + \mathbf{D}(\mathbf{A}\mathbf{A}^T+\bm{\Lambda})\mathbf{D}^T -  2\mathbf{D}\mathbf{A}\mathbf{X}^T - \bm{\Lambda})\\
+		&= \mathrm{Tr}(\mathbf{X}\mathbf{X}^T + \mathbf{X}\mathbf{A}^T(\mathbf{A}\mathbf{A}^T+\bm{\Lambda})^{-1}(\mathbf{A}\mathbf{A}^T+\bm{\Lambda})(\mathbf{A}\mathbf{A}^T+\bm{\Lambda})^{-1}\mathbf{A}\mathbf{X}^T \\
+		&~~~~~~- 2\mathbf{X}\mathbf{A}^T(\mathbf{A}\mathbf{A}^T + \bm{\Lambda})^{-1}\mathbf{A}\mathbf{X}^T - \bm{\Lambda})\\
+		&= \mathrm{Tr}(\mathbf{X}\mathbf{X}^T - \mathbf{X}\mathbf{A}^T(\mathbf{A}\mathbf{A}^T+\bm{\Lambda})^{-1}\mathbf{A}\mathbf{X}^T - \bm{\Lambda}).
+	\end{aligned}
+\end{equation}
+
+接下来需要求取$\frac{\partial \min\limits_{\mathbf{D}}~\mathcal{L}}{\partial \mu_i}$的值，由\eqref{fml:c5:SpsDicLagMRevised}知这是一个实函数对实变参量求导的过程，所得也是一个实变参量。由于求导的对象是实变参量，可以将分母部分写到迹里面，于是有：
+
+\begin{equation}\label{fml:c5:SpsDictLMRPar1}
+	\begin{aligned}
+		\frac{\partial \min\limits_{\mathbf{D}}~\mathcal{L}}{\partial \mu_i} &= \mathrm{Tr}\left( \frac{\partial \mathbf{X}\mathbf{X}^T}{\partial \mu_i} - \frac{ \partial \mathbf{X}\mathbf{A}^T(\mathbf{A}\mathbf{A}^T+\bm{\Lambda})^{-1}\mathbf{A}\mathbf{X}^T}{ \partial \mu_i } - \frac{\partial\bm{\Lambda}}{\partial \mu_i} \right)\\
+		&= -\mathrm{Tr}\left( \frac{ \partial \mathbf{X}\mathbf{A}^T(\mathbf{A}\mathbf{A}^T+\bm{\Lambda})^{-1}\mathbf{A}\mathbf{X}^T }{ \partial \mu_i } \right) - 1.
+	\end{aligned}
+\end{equation}
+
+$\frac{\partial\bm{\Lambda}}{\partial \mu_i}$得到的是一个对角线上只有一个元素为1的对角矩阵，原理参见\eqref{fml:c5:deltaX}。于是，该问题从求取原函数迹的导数，转化成了求取中间项的导数的迹。这是一个蔚为有趣的问题，下面将在给出一个完整的推导过程。
+
+\begin{example}\label{exm:c5:invMatr}
+	考虑矩阵$\mathbf{P}$有$[N,~M]$的大小，且存在对角矩阵$\mathbf{X}$，任意矩阵$\mathbf{A}$，大小均为$[N,~N]$；$\mathbf{X}=\mathrm{diag}{( x_1,~x_2,~\ldots,~x_N )}$。于是，试求$\mathrm{Tr}\left( \frac{\partial \mathbf{P}^T (\mathbf{X}+\mathbf{A})^{-1} \mathbf{P} }{\partial x_i} \right)$的值。
+	
+	设存在$\mathbf{X}$的小量增量$\Delta \mathbf{X}$，满足：
+	
+	\begin{equation}\label{fml:c5:deltaX}
+		\Delta \mathbf{X} = \left[
+		\begin{array}{c c c c c}
+			0 & 0 & \cdots & \cdots & 0 \\
+			0 & \ddots &   &  & \vdots \\
+			\vdots &   & \Delta x_i & & \vdots \\
+			\vdots &   &   & \ddots & 0 \\
+			0 & \cdots & \cdots & 0 & 0 \\
+		\end{array}
+		\right].
+	\end{equation}
+	
+	可见，\eqref{fml:c5:deltaX}对$x_i$求导，得到的将是一个只有对角线上第$i$个元素为1，其他位置全部为0的矩阵。
+	
+	于是，整个问题可以考虑改写为导数的定义式：
+	
+	\begin{equation}\label{fml:c5:SpsDictLMRPar2}
+		\begin{aligned}
+			\frac{\partial \mathbf{P}^T (\mathbf{X}+\mathbf{A})^{-1} \mathbf{P} }{\partial x_i} &= \frac{\mathbf{P}^T (\mathbf{X}+\mathbf{A}+\Delta \mathbf{X})^{-1} \mathbf{P} - \mathbf{P}^T (\mathbf{X}+\mathbf{A})^{-1} \mathbf{P} }{\Delta x_i}\\
+			&= \frac{\mathbf{P}^T \left( (\mathbf{X}+\mathbf{A}+\Delta \mathbf{X})^{-1} - (\mathbf{X}+\mathbf{A})^{-1} \right) \mathbf{P} }{\Delta x_i}\\
+			&= \frac{\mathbf{P}^T (\mathbf{X}+\mathbf{A})^{-1}\left( (\mathbf{X}+\mathbf{A}) - (\mathbf{X}+\mathbf{A}+\Delta \mathbf{X}) \right) (\mathbf{X}+\mathbf{A}+\Delta \mathbf{X})^{-1} \mathbf{P} }{\Delta x_i}\\
+			&= -\frac{\mathbf{P}^T (\mathbf{X}+\mathbf{A})^{-1} \Delta \mathbf{X} (\mathbf{X}+\mathbf{A}+\Delta \mathbf{X})^{-1} \mathbf{P} }{\Delta x_i}\\
+			&= - \left( \mathbf{P}^T (\mathbf{X}+\mathbf{A})^{-1} \frac{\Delta \mathbf{X}}{\Delta x_i} (\mathbf{X}+\mathbf{A})^{-1} \mathbf{P} \right)\\
+			&= - \left( \mathbf{P}^T (\mathbf{X}+\mathbf{A})^{-1} \mathbf{e}_i \mathbf{e}_i^T (\mathbf{X}+\mathbf{A})^{-1} \mathbf{P} \right).
+		\end{aligned}
+	\end{equation}
+	
+	其中，$\mathbf{e}_i=[0~0~\cdots~1~\cdots~0]^T$，表示第$i$个元素为1，其他元素为0的单位列向量。由\eqref{fml:c5:deltaX}，显然有：
+	
+	\begin{equation}\label{fml:c5:uniteDelta}
+		\begin{aligned}
+			\frac{\Delta \mathbf{X}}{\Delta x_i} = \mathbf{e}_i\mathbf{e}_i^T.
+		\end{aligned}
+	\end{equation}
+	
+	故\eqref{fml:c5:SpsDictLMRPar2}成立。
+	
+	显然，由于$\mathbf{e}_i$是个列向量，$\mathbf{P}^T (\mathbf{X}+\mathbf{A})^{-1} \mathbf{e}_i$也是个列向量，记为$\mathbf{p}$，显然由于对称关系，$\mathbf{p}^T = \mathbf{e}_i^T (\mathbf{X}+\mathbf{A})^{-1} \mathbf{P}$。于是，用$\mathbf{p}$改写\eqref{fml:c5:SpsDictLMRPar2}，并代入原问题，有
+	
+	\begin{equation}\label{fml:c5:Delatoriginal}
+		\begin{aligned}
+			\mathrm{Tr}\left( \frac{\partial \mathbf{P}^T (\mathbf{X}+\mathbf{A})^{-1} \mathbf{P} }{\partial x_i} \right) &= -\mathrm{Tr}\left( \mathbf{p}\mathbf{p}^T \right) = -\mathbf{p}^T\mathbf{p} = -{\lVert \mathbf{p} \rVert}^2_2 \\
+			&= -{\lVert \mathbf{P}^T (\mathbf{X}+\mathbf{A})^{-1} \mathbf{e}_i \rVert}^2_2.
+		\end{aligned}
+	\end{equation}
+	
+	即为所求。
+\end{example}
+
+用\eqref{fml:c5:SpsDictLMRPar1}的参数形式改写\autoref{exm:c5:invMatr}的结论，代入$\mathbf{P}=\mathbf{A}\mathbf{X}^T$，$\mathbf{X}=\bm{\Lambda}$，$\mathbf{A}=\mathbf{A}\mathbf{A}^T$，于是，
+
+\begin{equation}\label{fml:c5:SpsDictLMRPar3}
+	\begin{aligned}
+		\frac{\partial \min\limits_{\mathbf{D}}~\mathcal{L}}{\partial \mu_i} = {\lVert \mathbf{X}\mathbf{A}^T (\mathbf{A}\mathbf{A}^T+\bm{\Lambda})^{-1} \mathbf{e}_i \rVert}^2_2 - 1 = 0.
+	\end{aligned}
+\end{equation}
+
+这是一个最大值点方程，二阶求导的过程在此省去。虽然我们不能写出它的解析解，但显然这是一个很容易求解的凸问题。故而，\emph{拉格朗日对偶问题}有解，且解\eqref{fml:c5:SpsDictLMRPar3}的结果$\bm{\Lambda}$代入到\eqref{fml:c5:SpsDicLagMGrad}，即可求得最优的字典值$\mathbf{D}^{\ast}$。通过交替解Lasso问题和求取最优化字典的过程，即可完成整个稀疏编码的训练。
+
+有人可能会问，这里又没有证明KKT条件，单凭一个\emph{对偶问题}有解，怎么就能武断地下\eqref{fml:c5:lagrangeDualWell}的不等式取等这样严格的限制条件成立的结论呢？对于这个问题，我们不妨回到\eqref{fml:c5:SpsDicLagMGrad}，看看我们之前解出的最优解是什么。多么巧妙啊，将\eqref{fml:c5:SpsDicLagMGrad}代入到\eqref{fml:c5:SpsDictLMRPar3}，竟然能得到：
+
+\begin{equation}\label{fml:c5:SpsDictLMRPar4}
+	\begin{aligned}
+		{\lVert \mathbf{D} \mathbf{e}_i \rVert}^2_2 = {\lVert D(:,i) \rVert}_2 = 1.
+	\end{aligned}
+\end{equation}
+
+它反映了一个事实，那就是限制条件\eqref{fml:c5:SpsDictionaryConst}被以等号的形式严格满足了！尽管我们并无心去考察\emph{拉格朗日对偶问题}是否能代替原问题，甚至我们原本的限制条件也只有一个松弛的不等号，但该解法给出的结果却准确无误地表明，我们所求的限制条件，事实上确实以完全严格的形式满足了。
+
+\section{对偶条件}
+
+\subsection{对偶问题的凹性质}
+
+在讨论\emph{对偶问题}的相关条件之前，我们首先要厘清的问题是，为什么要解\emph{对偶问题}？在前文我们已经知道，对于一个任意的优化问题，它可能是非凸的，还有诸多限制条件，这都成为我们解这些问题的阻碍。因此我们考虑取一个\emph{对偶问题}。那么这个\emph{对偶问题}相比于原问题有什么优势呢？(1) 首先，它成功地将限制条件写进了目标函数里面，让我们控制可行域变得非常容易；(2) \emph{对偶问题}一定是一个凸问题，换言之，它的目标函数和所有的限制条件都一定是凹函数。对于(1)我们可以从直观上感受到；对于(2)，\emph{对偶问题}的限制条件都是线性的，故而下面叙述对目标函数凹性质的证明。
+
+\begin{lemma}[对偶问题的等价简化] \label{lem:c5:DualSimplified}
+	\autoref{def:c5:lagrangeDual}，亦即$\max\limits_{\bm{\lambda},~\bm{\mu}} \min\limits_x \mathcal{L}(x,~\bm{\lambda},~\bm{\mu})$，可以简化、等价成不含$\bm{\mu}$的形式，完整的表述为：
+	
+	\begin{subequations}
+		\renewcommand{\theequation}
+		{\theparentequation-\arabic{equation}}
+		\begin{align}
+			\max\limits_{\bm{\lambda}}\min_{x}~&\mathcal{L}(x,~\bm{\lambda}), \label{fml:c5:lagSimp}\\
+			s.t.~&\mathcal{L}(x,~\bm{\lambda})=f_0(x)+\sum\limits_{i=1}^{m}{\lambda_i f_i(x)}, \label{fml:c5:lagSimpDualFunc}\\
+			&\forall i,~\lambda_i \geqslant 0.\label{fml:c5:lagDualSimpFuncConst}
+		\end{align}
+	\end{subequations}
+\end{lemma}
+
+首先，考虑将\autoref{def:c5:commonOpt}中的$h_i(x)=0$改写成$h_i(x) \leqslant 0$和$h_i(x) \geqslant 0$的形式，于是有
+
+\begin{problem}[普通优化问题的等价改写] \label{def:c5:comOptEql}
+	\begin{subequations}
+		\renewcommand{\theequation}
+		{\theparentequation-\arabic{equation}}
+		\begin{align}
+			\min\limits_{x}~&f_0(x),\label{fml:c5:comOptEql}\\ 
+			s.t.~&f_i(x) \leqslant 0,~i=1,~\ldots,~m, \label{fml:c5:comOptEqlConst1}\\
+			&h_i(x), -h_i(x) \leqslant 0,~i=1,~\ldots,~p. \label{fml:c5:comOptEqlConst2}
+		\end{align}
+	\end{subequations}
+\end{problem}
+
+进而，可以改写拉格朗日函数
+
+\begin{subequations}
+	\renewcommand{\theequation}
+	{\theparentequation-\arabic{equation}}
+	\begin{equation}\label{fml:c5:lagFuncEql}
+		\begin{aligned} 
+			\mathcal{L}(x,~\bm{\lambda},~\bm{\mu})&=f_0(x)+\sum\limits_{i=1}^{m}{\lambda_i f_i(x)}+\sum\limits_{i=1}^{p}{\mu_{i+} h_i(x)}+\sum\limits_{i=1}^{p}{(-\mu_{i-})(-h_i(x))},\\
+			&=f_0(x)+\sum\limits_{i=1}^{m}{\lambda_i f_i(x)}+\sum\limits_{i=1}^{p}{(\mu_{i+}+\mu_{i-}) h_i(x)},
+		\end{aligned}
+	\end{equation}
+	\begin{align}
+		s.t.~&\lambda_i \geqslant 0,~\mu_{i+} \geqslant 0,~-\mu_{i-} \geqslant 0.\label{fml:c5:lagFuncEqlConst}
+	\end{align}
+\end{subequations}
+
+显然，如果我们用$\mu_i$代替$(\mu_{i+}+\mu_{i-})$，我们就可以得到\eqref{fml:c5:lagrangeFunc}形式的表述；如果我们将$\mu_{i+},~-\mu_{i-}$并入$\lambda_i$中，我们就能得到\eqref{fml:c5:lagSimpDualFunc}。故而，在下面的讨论中，只考虑有$\lambda_i$的情况，因为$\mu_i$可以被$\lambda_i$完全等价地表示出来。
+
+\begin{theorem}[对偶问题的凹性质] \label{tho:c5:DualSingular}
+	\emph{对偶问题}的目标函数$\mathcal{L}(\bm{\lambda})=\min\limits_x \mathcal{L}(x,~\bm{\lambda})$一定是一个凹函数。
+\end{theorem}
+
+设有一个固定的$x_0$，那么对它而言$\lambda_i f_i(x_0)$对任何一个$\lambda_i$都是一个线性变化的函数，$f_0(x_0)$是个定值。故而，$\mathcal{L}(x_0,~\bm{\lambda})$是一组线性函数的和，亦即一个多项式次数不超过1的函数，这样的函数称为\emph{仿射函数}。
+
+\begin{lemma}[仿射函数的凹性质] \label{lem:c5:AffineConcave}
+	具有相同参变量的两个凹函数$f_{c1}(\mathbf{x})$，$f_{c2}(\mathbf{x})$的最小值函数$f_m(\mathbf{x})=\min(f_{c1}(\mathbf{x}),~f_{c2}(\mathbf{x}))$仍然是一个凹函数。因此，任意数目的仿射函数共同的最小值函数，是一个凹函数。
+\end{lemma}
+
+由于$f_{c1}$和$f_{c2}$都是凹函数，$f_{c1}(\alpha\mathbf{x} + \beta\mathbf{y}) \geqslant \alpha f_{c1}(\mathbf{x}) + \beta f_{c1}(\mathbf{y})$，对$f_{c2}$亦然。于是
+
+\begin{equation}\label{fml:c5:affineConcave1}
+	\begin{aligned} 
+		\alpha f_{m}(\mathbf{x}) + \beta f_{m}(\mathbf{y}) &= \alpha \min( f_{c1}(\mathbf{x}),~f_{c2}(\mathbf{x})) + \beta \min( f_{c1}(\mathbf{y}),~f_{c2}(\mathbf{y})) \\
+		&\leqslant \alpha f_{c1}(\mathbf{x}) + \beta f_{c1}(\mathbf{y}) \leqslant f_{c1}(\alpha\mathbf{x} + \beta\mathbf{y}).
+	\end{aligned}
+\end{equation}
+
+\begin{equation}\label{fml:c5:affineConcave2}
+	\begin{aligned} 
+		\alpha f_{m}(\mathbf{x}) + \beta f_{m}(\mathbf{y}) &= \alpha \min( f_{c1}(\mathbf{x}),~f_{c2}(\mathbf{x})) + \beta \min( f_{c1}(\mathbf{y}),~f_{c2}(\mathbf{y})) \\
+		&\leqslant \alpha f_{c2}(\mathbf{x}) + \beta f_{c2}(\mathbf{y}) \leqslant f_{c2}(\alpha\mathbf{x} + \beta\mathbf{y}).
+	\end{aligned}
+\end{equation}
+
+因为$f_m(\alpha\mathbf{x} + \beta\mathbf{y})$必然取$f_{c1}(\alpha\mathbf{x} + \beta\mathbf{y})$或$f_{c2}(\alpha\mathbf{x} + \beta\mathbf{y})$其中一个值。故而，无论取哪个值，总有$\alpha f_{m}(\mathbf{x}) + \beta f_{m}(\mathbf{y}) \leqslant f_m(\alpha\mathbf{x} + \beta\mathbf{y})$成立。亦即，$f_m$也是一个凹函数。
+
+因为单个仿射函数是线性函数，线性函数既是凹函数又是凸函数。因此，由数学归纳法可知，任意个仿射函数的最小值函数总是一个凹函数。
+
+在已知该结论的情况下，容易得到，设有无数组$\{x_0,~x_1,~x_2,~\ldots,~x_i,~\ldots\}$共同构成了$x$的定义域，于是，$\mathcal{L}(\bm{\lambda})$可以看成这无数个元素对应的各自的仿射函数$\mathcal{L}(x_i,~\bm{\lambda})$共同构成的最小值函数，亦即：
+
+\begin{equation}\label{fml:c5:affineMin}
+	\begin{aligned} 
+		\mathcal{L}(\bm{\lambda}) = \min\limits_x\mathcal{L}(x,~\bm{\lambda}) = \min\left\{\mathcal{L}(x_i,~\bm{\lambda}),~\mathcal{L}(x_2,~\bm{\lambda}),~\ldots,~\mathcal{L}(x_i,~\bm{\lambda}),~\ldots\right\}.
+	\end{aligned}
+\end{equation}
+
+由\autoref{lem:c5:AffineConcave}可以直接导出，$\mathcal{L}(\bm{\lambda})$是一个凹函数。且这个凹函数有一个最大值点，亦即\emph{拉格朗日对偶问题}的解。
+
+\subsection{弱对偶与强对偶}
+
+由\eqref{fml:c5:lagrangeDualWell}，我们知道
+
+\begin{equation}\label{fml:c5:weakDual}
+	\begin{aligned}
+		d^{\ast} \leqslant p^{\ast}.
+	\end{aligned}
+\end{equation}
+
+我们把\eqref{fml:c5:weakDual}这样的条件称为\emph{弱对偶}；当且仅当\eqref{fml:c5:weakDual}严格取等的时候，我们把这样的条件称为\emph{强对偶}。\emph{弱对偶}是所有\emph{拉格朗日对偶问题}都必定满足的条件，而\emph{强对偶}却只能满足于部分特殊的\emph{对偶问题}。\autoref{fig:cp5:lagbound}已经展示了两种对偶条件下求解的区别，找到一种证明\emph{强对偶}是否成立的方法，能给我们对\emph{对偶问题}的应用带来巨大的便利，这将在稍后说明原因。
+
+了解这个性质，一个关键点是，要了解是什么造成了$d^{\ast} \leqslant p^{\ast}$这样的情况有可能发生。鉴于$p^{\ast}$表示的是可行域内的最小值，$d^{\ast}$比它更小的情况下，一定表示\emph{对偶问题}的最优解不在原问题的可行域内，换言之，这样的解对我们而言是没有太大意义的，如果有意义，也仅仅是提供了一个真正的最小值的下界。
+
+现在回头看\eqref{fml:c5:SpsDictLMRPar4}，它并没有直接表明，\emph{拉格朗日对偶问题}的解是可行域内的最优解，但是它蕴涵了一个明显的暗示，接下来我们将讨论为什么它能导出拉格朗日问题的解就是我们想要的最优解。
+
+\begin{lemma}[最优解的等价性] \label{lem:c5:BestSoluEql}
+	一个原问题的\emph{对偶问题}解$\{x|\arg\limits_x d^{\ast}\}$在原问题的可行域内，是该解与原问题的最优解等价的充要条件。
+\end{lemma}
+
+证明\autoref{lem:c5:BestSoluEql}的过程很简单。因为\eqref{fml:c5:weakDual}必定成立，如果这个解本身就在原问题的可行域内，可行域内就再也找不出一个比它对应的$d^{\ast}$更小的$p^{\ast}$。由此，可以推出：\emph{对偶问题}的解在可行域中是\emph{对偶问题}的解等价于原问题的最优解的充分条件；而原问题的最优解要等价于\emph{对偶问题}的解，则一定需要\emph{对偶问题}的解在可行域中，故而二者构成了充要条件。换言之，在可行域内\emph{对偶问题}解与原问题的最优解是完全等价的。
+
+同时，在这一情况下，我们也可以导出$d^{\ast}=p^{\ast}$，这就是\emph{强对偶}条件。换言之，
+
+\begin{theorem}[对偶问题的解在可行域中的必要条件] \label{tho:c5:FeasibleDualNec}
+	一个原问题的\emph{对偶问题}解$\{x|\arg\limits_x d^{\ast}\}$，如果能被证明在原问题的可行域内，则满足必要条件$d^{\ast}=p^{\ast}$。
+\end{theorem}
+
+可见，\emph{强对偶}条件是\emph{对偶问题}的解在可行域中的必要条件。那它是否是解在可行域中的充分条件呢？遗憾的是，在绝大多数情况下，这一推论并不成立。下面将说明导致充分性无法满足的原因。
+
+\begin{lemma}[强对偶不是对偶问题在可行域中的充分条件] \label{lem:c5:FeasibleDualSuf}
+	\emph{强对偶}条件不能推出\emph{对偶问题}的解在可行域中，亦即该条件下\emph{对偶问题}的解不一定等价于原问题的解。
+\end{lemma}
+
+下面将用反证法证明：绝大多数情况下，可以找到符合\autoref{def:c5:commonOpt}的反例，使得不在原问题可行域内的\emph{对偶问题}解也能导出\emph{强对偶}条件。
+
+考察这一问题，重要的是找到什么样的反例能提供对强对偶条件充分性的反证。如果考虑存在加在限制条件上的一组拉格朗日乘子$\{\lambda_1^{\ast},~\lambda_2^{\ast},~\ldots,~\lambda_n^{\ast}\}$，使得$\mathcal{L}(x,~\lambda_1^{\ast},~\lambda_2^{\ast},~\ldots,~\lambda_n^{\ast})$对$x$取到的最小值$d^{\ast}$满足$d^{\ast}=p^{\ast}$，则使得上述条件成立的$x$都是拉格朗日对偶函数的最优解（因为$d^{\ast} \leqslant p^{\ast}$必须成立，可知$d^{\ast}$最大值就是$p^{\ast}$）。如果这样的$x$能找到不在可行域内的解，说明\emph{拉格朗日对偶问题}的最优解虽然满足\emph{强对偶}条件，却可能不在可行域内，继而由必要性可知，这样的解不能等效为原问题的最优解。
+
+事实证明，设计合理的$f_0$和$f_i$，尤其是在限制条件不止1个的情况下，极容易找到符合上述条件的反例。只讨论输入只有一个的实变量$x$，可行域只由$f_1(x)$和$f_2(x)$决定的情况。其中，$f_1$单减，用来决定左边界，$f_2$单增，用来决定右边界。在这样一个简单的模型下，只存在$\lambda_1$和$\lambda_2$两个拉格朗日乘子。
+
+记原问题$f_0(x)$在可行域内的最优解为$x_p$，在可行域外的最优解为$x_q$，\emph{对偶问题}的最优解在$x_d$，于是：
+
+\begin{figure}[htbp]
+	\centering
+	\begin{minipage}[b]{0.48\textwidth}
+		\subfigure[$\mathcal{L}(x_p)<\mathcal{L}(x_q)$时，反例在$\lambda_1=0.5,\lambda_2=0$]{
+			\includeMNBgraph[width = 0.9\columnwidth]{cp5_lagConEx1.eps}
+		}
+	\end{minipage}
+	\begin{minipage}[b]{0.48\textwidth}
+		\subfigure[反例的动态演示]{
+			\animategraphics[controls, palindrome, width=0.9\columnwidth]{24}{\PicFolder cp5_lagC1/LagrangeConE1_frame_}{1}{101}
+		}
+	\end{minipage}
+	\DeclareGraphicsExtensions.
+	\caption{强对偶条件下对偶解推出原问题最优解的的反例1。}
+	\label{fig:cp5:lagCounterEx1}
+\end{figure}
+
+$\mathcal{L}(x_p)<\mathcal{L}(x_q)$时，设$f_0$是一个仅仅在$(40,~60)$之间$<40$的函数，单减、单增的部分斜率各自为$\mp 1$。$f_1$和$f_2$在单减/单增的部分斜率分别为$\mp 1$，且各自定义了可行域的下界和上界。于是，可行域在$[50,~60]$。且可行域内的最小值在$x=50$，$p^{\ast}=30$，即可行域的边缘上，如\autoref{fig:cp5:lagCounterEx1}。虽然$f_0$简单到可以被看作是一个不需要可行域也能解出有效最优解的目标函数。然而，令$\lambda_1=0.5,~\lambda_2=0$，却可以取到$\{x|x=50,~x\in[70,+\infty)\}$均满足$d^{\ast}=30$，于是，这成为一个反例，因为满足$\lambda_1=0.5,~\lambda_2=0$解到的最优解$[70,+\infty)$有无数个，且全部都不在可行域内\footnote{\textbf{不在可行域内的原因}：可以发现，如果只看$f_1$条件，其实这些解是在$f_1$决定的区域内的；然而由于$f_2$限定了上界，这些解就不在可行域中。}。
+
+\begin{figure}[htbp]
+	\centering
+	\begin{minipage}[b]{0.48\textwidth}
+		\subfigure[$\mathcal{L}(x_p)=\mathcal{L}(x_q)$时，反例在$\lambda_1=0,\lambda_2=0$]{
+			\includeMNBgraph[width = 0.9\columnwidth]{cp5_lagConEx2.eps}
+		}
+	\end{minipage}
+	\begin{minipage}[b]{0.48\textwidth}
+		\subfigure[反例的动态演示]{
+			\animategraphics[controls, palindrome, width=0.9\columnwidth]{24}{\PicFolder cp5_lagC2/LagrangeConE2_}{1}{101}
+		}
+	\end{minipage}
+	\DeclareGraphicsExtensions.
+	\caption{强对偶条件下对偶解推出原问题最优解的的反例2。}
+	\label{fig:cp5:lagCounterEx2}
+\end{figure}
+
+$\mathcal{L}(x_p)=\mathcal{L}(x_q)$时，一定可以成为充分条件的反例。因为任何满足该条件的目标函数在$\bm{\lambda}$全部为0时，均可得到$d^{\ast}=\mathcal{L}(x_q)$，$p^{\ast}=\mathcal{L}(x_p)$，此时显然$x_p,~x_q$都是\emph{对偶问题}的最优解，但是$x_q$却不在原问题的可行域内。\autoref{fig:cp5:lagCounterEx2}图示了这种反例，只需要微调目标函数$f_0$，在$x=1$设立一个最小值恰好为30即可。此时$\lambda_1=0,~\lambda_2=0$构成一个反例。对偶解在$\{1,50\}$，而显然$x=1$不在可行域内。
+
+\begin{figure}[htbp]
+	\centering
+	\begin{minipage}[b]{0.48\textwidth}
+		\subfigure[$\mathcal{L}(x_p)>\mathcal{L}(x_q)$时，反例在$\lambda_1=0,\lambda_2=0$]{
+			\includeMNBgraph[width = 0.9\columnwidth]{cp5_lagConEx3.eps}
+		}
+	\end{minipage}
+	\begin{minipage}[b]{0.48\textwidth}
+		\subfigure[反例的动态演示]{
+			\animategraphics[controls, palindrome, width=0.9\columnwidth]{24}{\PicFolder cp5_lagC3/LagrangeConE3_}{1}{101}
+		}
+	\end{minipage}
+	\DeclareGraphicsExtensions.
+	\caption{强对偶条件下对偶解推出原问题最优解的的反例3。}
+	\label{fig:cp5:lagCounterEx3}
+\end{figure}
+
+$\mathcal{L}(x_p)>\mathcal{L}(x_q)$时，这往往是需要求解\emph{对偶问题}的场景。然而，这一条件下同样可以设计出反例，而且很容易设计。仍然只考虑$\lambda_2=0$的场合，这样的反例往往满足（但不一定必须满足）以下条件：
+
+\begin{enumerate}
+	\item 可行域内的最小值解$x_p$在可行域的边缘（亦即至少存在一个限制条件，令$f_i(x_p)=0$）；
+	\item 在$f_i(x_p)=0$对应的$\lambda_i$增大的过程中，对$\forall~x\in\mathcal{D}$，满足$0 \leqslant \lambda_i \leqslant \frac{f_0(x_p)-f_0(x)}{f_i(x)}$，（可定义$\bar{\lambda}_i = \min_{x}{\frac{f_0(x_p)-f_0(x)}{f_i(x)}}$）亦即可行域内的最小值在$\bm{\lambda}$足够小的范围内保持不变；
+	\item 可行域外的最小值$x_d$对应的同一个条件$f_i(x_d)$是个很大的值，容易取到$\lambda^{\ast}_i = \frac{f_0(x_p)-f_0(x_d)}{f_i(x_d)} \leqslant \bar{\lambda}_i$。
+\end{enumerate}
+
+\autoref{fig:cp5:lagCounterEx3}图示了在这一目标下设计的反例，$\lambda_1=0.4,~\lambda_2=0$时，$\mathcal{L}$第一次对$\lambda_1$达到最大值$d^{\ast}=30$，然而这一情况下$\{1,~50\}$均是\emph{对偶问题}的解，且$x=1$不在可行域内，构成反例。
+
+综上，在各种情况下，都存在反例，使得由\emph{强对偶条件}不能反推出\emph{对偶问题}的解与原问题的解等价。但是观察这些反例，可以发现，造成反例的原因都是由于\emph{对偶问题}解出了不止一个最优解。虽然存在不在可行域内的对偶解，但在可行域的最优解仍然位列这些对偶解之中。由此，我们可以得到一个更弱的推论。
+
+\begin{lemma}[对偶问题的解与原问题解的关系] \label{lem:c5:DualRelationship}
+	在\emph{强对偶}条件$(d^{\ast}=p^{\ast})$下，设原问题有唯一的最优解$x_p$，其对应的\emph{对偶问题}最优解存在，构成集合$\mathbb{X}_d$，则$x_p \in \mathbb{X}_d$。
+\end{lemma}
+
+证明\autoref{lem:c5:DualRelationship}的过程较为简单。设$\forall~x\in\mathbb{X}_d$满足$\mathcal{L}(x,~\bm{\lambda}_x)=d^{\ast}$。考虑可行域$\mathcal{D}$内，由于$\forall~i,~\lambda_i \geqslant 0,~f_i(x) \leqslant 0$，$\lambda_i$的任意增量$\Delta\lambda_i$都会导致$\mathcal{L}$减小。继而，因为$\mathcal{L}(x_p,~0)=p^{\ast}$，且可行域$\mathcal{D}$内$\mathcal{L}$对任意$\bm{\lambda}$都是单减的，则有
+
+\begin{enumerate}
+	\item \textbf{若在该组$\bm{\lambda}_x$下，$\mathcal{L}(x_p,~\bm{\lambda}_x)<p^{\ast}$}：则存在$x_p$令$\mathcal{L}(x_p,~\bm{\lambda}_x)<\mathcal{L}_{x\in\mathbb{X}_d}(x,~\bm{\lambda}_x)$，此时$x_p$取到了更小的拉格朗日函数值，与$\mathbb{X}_d$在该组$\bm{\lambda}_x$目标函数值最小的条件矛盾，故不存在这样的情况；
+	\item \textbf{若在该组$\bm{\lambda}_x$下，$\mathcal{L}(x_p,~\bm{\lambda}_x)>p^{\ast}$}：显然这不可能成立，因为在可行域内，$\mathcal{L}$在$x_p$固定时，一定是单减的，故不存在这样的情况；
+	\item \textbf{若在该组$\bm{\lambda}_x$下，$\mathcal{L}(x_p,~\bm{\lambda}_x)=p^{\ast}$}：显然$\mathcal{L}(x_p,~\bm{\lambda}_x)=d^{\ast}$，于是$x_p \in \mathbb{X}_d$。
+\end{enumerate}
+
+综上，$x_p \in \mathbb{X}_d$一定成立。
+
+由上述推论进一步可以得到的结论是，
+
+\begin{theorem}[限定条件下，强对偶是对偶问题在可行域中的充分条件] \label{tho:c5:FeasibleDualSuf}
+	对具有唯一最小值的原问题，若\emph{强对偶}条件成立，且只能取到唯一的一组$\bm{\lambda}$和唯一一个对应的\emph{对偶问题}最优解，则该最优解一定是原问题的最优解。
+\end{theorem}
+
+结合\autoref{tho:c5:FeasibleDualNec}和\autoref{tho:c5:FeasibleDualSuf}，可以确信的是考察\emph{强对偶}条件对我们能否用对偶问题代替原问题具有重要的指导意义。事实上，下面将介绍的，是许多围绕这一性质的拓展工作，它们共同的特点是，通过证明在某些限定条件下\emph{强对偶}成立，从而间接证明\emph{对偶问题}的解等价于原问题的解。

@@ -1,0 +1,250 @@
+\chapterimage{chap1.jpg} % Chapter heading image
+\chapter{引论}
+
+\emph{凸优化(Convex Optimization)}是求最优解的一类经典问题，本章将初探一些简单而经典的凸问题的解法。为了能正确求解出符合优化目标的解，需要将过往的实数分析推广到矩阵分析。在本书中，为了体现没有矩阵分析背景的新手上手的思路，每当需要新的分析知识作为基石的时候，或将一些基础的推导放在最前面，或将某些问题的推导作为独立的引理，随着提出进行求解。
+
+本章主要探讨的问题包括\emph{最小平方问题（见\autoref{c1:minsquare}）}和\emph{线性规划问题（见\autoref{c1:linear}）}。进一步地，简要介绍了几种简单的凸问题（见\autoref{c1:convex}）。
+
+\section{探讨矩阵分析}
+    矩阵运算推广到数学分析，需要有以下约定：
+    
+    \begin{enumerate}[label=(\arabic*)]
+    	\item 向量可以看作行/列为1的特殊的矩阵；
+    	\item 向量一律用形如$\mathbf{x}$或$\vec{x}$的形式书写，矩阵一律用形如$\mathbf{X}$的形式书写，用在向量的推导式不可直接推广并应用在矩阵的情形；
+    	\item 函数$f$对矩阵$\mathbf{X}$求导，所得为矩阵$\mathbf{F}$，它的大小与$\mathbf{X}$相同，且满足$F_{ij}=\frac{\mathrm{d}f}{\mathrm{d}X_{ij}}$；
+    	\item 向量$\mathbf{a}$对向量$\mathbf{b}$求导，所得为矩阵$\mathbf{X}$，它的大小为$(A,~B)$，且满足$X_{ij}=\frac{\mathrm{d}a_i}{\mathrm{d}b_{j}}$，这样的矩阵称为\emph{雅可比矩阵(Jacobi Matrix)}；
+    	\item \emph{雅可比矩阵}有可能会给出反直觉的结论，例如$\frac{\mathrm{d}\mathbf{a}}{\mathrm{d}\mathbf{b}}$中，若$\mathbf{a}$退化为维数为1的实数，所得的向量形状并非与$\mathbf{b}$相同，而是$\mathbf{b}$的转置；
+    	\item 向量对矩阵求导，矩阵对向量求导和矩阵对矩阵求导，都是存在的，然而至少到本章为止，不需要讨论这些复杂的情况。
+    \end{enumerate}
+
+	下述的一些练习，部分将出现在后文的证明步骤中
+	
+	\begin{example}
+		考虑两个向量$\mathbf{x},~\mathbf{a}$的内积$\mathbf{a}^T \mathbf{x}$，这是一个常数，因此，对其进行向量求导，有
+		
+		\begin{equation}\label{fml:c1:minsquareLossP2}
+			\begin{aligned}
+				\left( \frac{\mathrm{d} \mathbf{a}^T \mathbf{x} }{\mathrm{d}\mathbf{x}} \right)_k = \frac{\mathrm{d}}{\mathrm{d} x_k} \left( \sum\limits_{i=1}^{n}{ a_i x_i } \right) = a_k.
+			\end{aligned}
+		\end{equation}
+		
+		同理，$\frac{\mathrm{d} \mathbf{x}^T \mathbf{a} }{\mathrm{d}\mathbf{x}}$得到的结果与上述相同；这两种情况下$\mathbf{x},~\mathbf{a}$均保持同形，故有
+		
+		\begin{equation}\label{fml:c1:minsquareLossP22}
+			\begin{aligned}
+				\frac{\mathrm{d} \mathbf{a}^T \mathbf{x} }{\mathrm{d}\mathbf{x}} = \frac{\mathrm{d} \mathbf{x}^T \mathbf{a} }{\mathrm{d}\mathbf{x}} = \mathbf{a}.
+			\end{aligned}
+		\end{equation}
+		
+		反之，如果$\exists~\mathbf{c}=\mathbf{a}^T$，那么代换到\eqref{fml:c1:minsquareLossP22}将求得$\mathbf{c}^T$。
+	\end{example}
+    
+	\begin{example}
+		试求$\frac{\mathrm{d} \mathbf{x}^T \mathbf{A} \mathbf{x}}{\mathrm{d}\mathbf{x}}$的值。
+
+		\begin{equation}\label{fml:c1:minsquareLossP1}
+			\begin{aligned}
+				\because~\left(\frac{\mathrm{d}}{\mathrm{d}\mathbf{x}} \left( \mathbf{x}^T \mathbf{A} \mathbf{x}\right) \right)_k &= \frac{\mathrm{d}}{\mathrm{d}x_k} \left( \sum\limits_{i=1}^{n}{ \sum\limits_{j=1}^{n}{ A_{ij} x_i x_j } } \right)\\
+				&= \sum\limits_{j=1}^{n}{ A_{kj} x_j } + \sum\limits_{i=1}^{n}{ A_{ik} x_i }.\\
+				\therefore~\frac{\mathrm{d}}{\mathrm{d}\mathbf{x}} \left( \mathbf{x}^T \mathbf{A} \mathbf{x} \right) &= (\mathbf{A}+\mathbf{A}^T)\mathbf{x}.
+			\end{aligned}
+		\end{equation}
+	\end{example}
+
+\section{我们要讨论的问题}
+考虑到如下形式的问题（注意参数和输出均有可能是矩阵）。
+
+\begin{problem}[普适优化问题] \label{def:c1:common}
+  \begin{subequations}
+  	\renewcommand{\theequation}
+  	{\theparentequation-\arabic{equation}}
+  	\begin{align}
+  	  \min~&f_0 (x),\label{fml:c1:common}\\ 
+  	  s.t.~&f_i (x) \leqslant b_i,~i=1,~\ldots,~m. \label{fml:c1:commonconst}
+  	\end{align}
+  \end{subequations}
+\end{problem}
+
+如果对任意的$i=0,~1,~\ldots,~m$，均有
+
+\begin{align} \label{fml:c1:commonconvex}
+	f_i(\alpha x + \beta y) \leqslant \alpha f_i(x) + \beta f_i(y).
+\end{align}
+
+这样的问题称为\emph{凸(Convex)问题}，如果\eqref{fml:c1:commonconvex}中的不等号方向反向，这样的问题就称为\emph{凹(Concave)问题}。凸/凹问题本质上都可以用相同的方式解出，特别地，如果\eqref{fml:c1:commonconvex}中的不等号退化为等号，这样的问题就称为\emph{线性问题}。
+
+如果进入到离散形式的问题中，我们可以重新看待\autoref{def:c1:common}。其中，$x$可以被看作是投资，$f_0$可以被看作是\emph{耗费(Cost)}函数，$f_i$则是\emph{预算(budget)限制条件}，这样的问题就可以被描述成一个投资与耗费最小化的\emph{组合优化(portfolio optimization)问题}。其他的例子在设备设计、数据拟合、自动决策、嵌入式设备等领域中应用广泛，不一而足。
+
+与\emph{线性规划(Linear Programming)}、\emph{最小平方(Least-square)}所一致的是，\emph{凸优化}正是在众多难解、不可解的优化问题中，可以高效求解的例外。
+
+\section{两个经典问题}
+
+\subsection{最小平方问题}
+\label{c1:minsquare}
+
+考虑存在列向量$x$，一个最小平方问题可以描述为：
+
+\begin{problem}[最简的最小平方问题] \label{def:c1:minsquare}
+	\begin{align} \label{fml:c1:minsquare}
+		\min\limits_{\mathbf{x}} f_0(\mathbf{x}) = \min\limits_{\mathbf{x}} {\lVert \mathbf{A}\mathbf{x} - \mathbf{b} \rVert}^2_2.
+	\end{align}
+\end{problem}
+
+如此，只需对$f_0$求取梯度，即可得到所需的最优解$x^{\ast}$，有如下推导
+
+\begin{equation}\label{fml:c1:minsquareLoss}
+	\begin{aligned}
+		\frac{\mathrm{d}f_0}{\mathrm{d}\mathbf{x}} &= \frac{\mathrm{d}}{\mathrm{d}\mathbf{x}} \left( (\mathbf{A}\mathbf{x} - \mathbf{b})^{T}(\mathbf{A}\mathbf{x} - \mathbf{b}) \right)\\
+		&= \frac{\mathrm{d}}{\mathrm{d}\mathbf{x}} \left( (\mathbf{x}^{T}\mathbf{A}^{T} - \mathbf{b}^{T})(\mathbf{A}\mathbf{x} - \mathbf{b}) \right)\\
+		&= \frac{\mathrm{d}}{\mathrm{d}\mathbf{x}} \left( \mathbf{x}^{T}\mathbf{A}^{T}\mathbf{A}\mathbf{x} - 2\mathbf{b}^{T}\mathbf{A}\mathbf{x} + \mathbf{b}^{T}\mathbf{b} \right)\\
+		&= 2\mathbf{A}^T\mathbf{A}\mathbf{x}-2(\mathbf{b}^{T}\mathbf{A})^T = 2\mathbf{A}^T\mathbf{A}\mathbf{x}-2\mathbf{A}^T\mathbf{b} = 0.
+	\end{aligned}
+\end{equation}
+
+于是，
+
+\begin{equation}\label{fml:c1:minsquareLossOpt}
+	\begin{aligned}
+		\mathbf{x} = (\mathbf{A}^T\mathbf{A})^{-1}\mathbf{A}^T\mathbf{b}.
+	\end{aligned}
+\end{equation}
+
+为所求的最优解。注意\eqref{fml:c1:minsquareLoss}中，部分推导的详细过程属于矩阵的运算定式，可在\eqref{fml:c1:minsquareLossP22},\eqref{fml:c1:minsquareLossP1}查看。
+
+\subsubsection{变式：带权最小平方问题}
+现在重新考虑\autoref{def:c1:minsquare}，考虑一个权重向量$\mathbf{w}$与$\mathbf{b}$的维数相等，那么由于方程系数$\mathbf{A}$可以拆解成与$\mathbf{w},~\mathbf{b}$维数相同数目的行向量$\{a^T_{i}\}$，亦即：
+
+\begin{equation}\label{fml:c1:reviseA}
+	\mathbf{A} = \left[
+	\begin{array}{c}
+		 \mathbf{a}^T_1 \\
+		 \mathbf{a}^T_2 \\
+		 \vdots \\
+		 \mathbf{a}^T_n \\
+	\end{array}
+	\right].
+\end{equation}
+
+如此，\eqref{fml:c1:minsquare}可以改写成
+
+\begin{align} \label{fml:c1:minsquareRevise}
+	\min\limits_{\mathbf{x}} f_0(\mathbf{x}) = \sum\limits_{i=1}^{n}{ \mathbf{a}^T_i \mathbf{x} - b_i }.
+\end{align}
+
+如果在求和号内加上权值，则原问题改写成
+
+\begin{align} \label{fml:c1:minsquareReviseW}
+	\min\limits_{\mathbf{x}} f_0(\mathbf{x}) = \sum\limits_{i=1}^{n}{ w_i \left( \mathbf{a}^T_i \mathbf{x} - b_i \right) }.
+\end{align}
+
+显然这样的形式不再能写成$l_2$-norm，但是若设有对角矩阵$\mathbf{W}=\mathrm{diag}(\mathbf{w})$，则仍可将\eqref{fml:c1:minsquareReviseW}改写成矩阵表示的形式。
+
+\begin{problem}[带权的最小平方问题] \label{def:c1:minsquareReviseWM}
+	\begin{align} \label{fml:c1:minsquareReviseWM}
+		\min\limits_{\mathbf{x}} f_0(\mathbf{x}) = (\mathbf{A}\mathbf{x}-\mathbf{b})^T\mathbf{W}(\mathbf{A}\mathbf{x}-\mathbf{b}).
+	\end{align}
+\end{problem}
+
+显然$\mathbf{W}^T=\mathbf{W}$，于是沿用与\eqref{fml:c1:minsquareLoss}相同的样式，该问题的求解过程如下：
+
+\begin{equation}\label{fml:c1:minsquareReviseSolve}
+	\begin{aligned}
+		\frac{\mathrm{d}f_0}{\mathrm{d}\mathbf{x}} &= \frac{\mathrm{d}}{\mathrm{d}\mathbf{x}} \left( \mathbf{x}^{T}\mathbf{A}^{T}\mathbf{W}\mathbf{A}\mathbf{x} - 2\mathbf{b}^{T}\mathbf{W}\mathbf{A}\mathbf{x} + \mathbf{b}^{T}\mathbf{W}\mathbf{b} \right)\\
+		&= 2\mathbf{A}^T\mathbf{W}\mathbf{A}\mathbf{x}-2\mathbf{A}^T\mathbf{W}\mathbf{b} = 0.
+	\end{aligned}
+\end{equation}
+
+于是，
+
+\begin{equation}\label{fml:c1:minsquareReviseLossOpt}
+	\begin{aligned}
+		\mathbf{x} = (\mathbf{A}^T\mathbf{W}\mathbf{A})^{-1}\mathbf{A}^T\mathbf{W}\mathbf{b}.
+	\end{aligned}
+\end{equation}
+
+\subsubsection{变式：带正则最小平方问题}
+有时候，为了保证求得的$\mathbf{x}$足够小，还需要加上$\mathbf{x}$的正则项（$l_2$-norm）。在该情况下，问题描述为：
+
+\begin{problem}[带正则项的最小平方问题] \label{def:c1:minsquareReg}
+	\begin{align} \label{fml:c1:minsquareReg}
+		\min\limits_{\mathbf{x}} f_0(\mathbf{x}) = \min\limits_{\mathbf{x}} {\lVert \mathbf{A}\mathbf{x} - \mathbf{b} \rVert}^2_2 + \rho {\lVert \mathbf{x} \rVert}^2_2.
+	\end{align}
+\end{problem}
+
+显然，求解\autoref{def:c1:minsquareReg}只需要在梯度后加上$\rho\frac{\mathrm{d}\mathbf{x}^T\mathbf{x}}{\mathrm{d}\mathbf{x}}$即可。显然，代入\eqref{fml:c1:minsquareLossP1}，该值为$2\rho\mathbf{x}$。
+
+于是，该问题易解，为
+
+\begin{equation}\label{fml:c1:minsquareRegLossOpt}
+	\begin{aligned}
+		\mathbf{x} = (\rho\mathbf{I} + \mathbf{A}^T\mathbf{A})^{-1} \mathbf{A}^T\mathbf{b}.
+	\end{aligned}
+\end{equation}
+
+这表明，$\rho$越大，$\mathbf{x}$就越倾向于被限定在较小的范围内，这与最小化$l_2$-norm的目标是一致的。
+
+\subsection{线性规划问题}
+\label{c1:linear}
+
+一个线性规划问题指的是优化目标和限制条件全部为线性方程/不等式的问题。一般地，该问题可以被描述成如下形式
+
+\begin{problem}[较一般的线性规划问题] \label{def:c1:minlinear}
+	\begin{subequations}
+		\renewcommand{\theequation}
+		{\theparentequation-\arabic{equation}}
+		\begin{align}
+		\min\limits_{\mathbf{x}}~&\mathbf{c}^T\mathbf{x},\label{fml:c1:minlinear}\\ 
+		s.t.~&\mathbf{a}_i^T\mathbf{x} \leqslant b_i,~i=1,~\ldots,~m. \label{fml:c1:minlinearconst}
+		\end{align}
+	\end{subequations}
+\end{problem}
+
+故而，容易看出，该问题与\autoref{def:c1:minsquare}最大的区别在于，它具有多个限制条件。这意味着，凭借梯度下降得到的解极有可能不在\emph{可行域(Feasible Domain)}内（事实上，这个问题中也不可能在没有限制条件的情况下解出``最优解''）。换言之，凭入门水平的知识，暂时还无法解决这个问题，并且该问题也没有解析形式的解。但是，存在高效率、相当成熟的算法，能得到这一类问题的数值解。因此，在本节我们只讨论如何将一个已知的问题设法转换成一个线性的问题。
+
+\begin{problem}[切比雪夫近似问题] \label{def:c1:chebyapp}
+	\begin{align} \label{fml:c1:chebyapp}
+		\min\limits_{\mathbf{x}} \max_{i=1,2,\ldots,k} |\mathbf{a}_i^T\mathbf{x}-b_i|.
+	\end{align}
+\end{problem}
+
+该问题需要最小化的是一个最大值函数，这意味着，它是一个不可微的函数，从而难以应用梯度求解。然而，它可以被近似成线性问题，
+
+\begin{problem}[切比雪夫近似问题（线性形式）] \label{def:c1:chebyapplin}
+	\begin{subequations}
+		\renewcommand{\theequation}
+		{\theparentequation-\arabic{equation}}
+		\begin{align}
+		\min\limits_{\mathbf{x}}~&\xi,\label{fml:c1:chebyapplin}\\ 
+		s.t.~&\mathbf{a}_i^T\mathbf{x}-\xi \leqslant b_i,~i=1,~\ldots,~m, \label{fml:c1:chebyapplinconst1}\\
+		&-\mathbf{a}_i^T\mathbf{x}-\xi \leqslant -b_i,~i=1,~\ldots,~m. \label{fml:c1:chebyapplinconst2}
+		\end{align}
+	\end{subequations}
+\end{problem}
+
+与\autoref{def:c1:minlinear}形式相同，它可以求解。这种近似的意义是，存在一个绝对距离$\xi$，使得所有$|\mathbf{a}_i^T\mathbf{x}-b_i|$小于这个距离，并确定满足这一条件的最小距离。实质上，它相当于将$|\mathbf{a}_i^T\mathbf{x}-b_i|$代换成了$\xi$，``最大值''隐含在了所有约束条件均满足不等式这一设定中。
+
+\subsection{凸问题浅述}
+\label{c1:convex}
+一个\emph{凸问题}，已经存在较为成熟的方法去求解它了。尽管这可能不及\emph{最小平方}，抑或是\emph{线性规划}的求解一般成熟，但也仅此而已。我们有一套非常准确的方法得到最优解，而不需要担心陷入局部最优、或者是不能弥合的误差之中。
+
+因此，\emph{凸优化}的关键步骤不再是求解的细节，而是如何将一个已知的问题建模成\emph{凸问题}，后续的章节会对此进行理论和应用的探讨。
+
+那么，这是否是说，\emph{凸优化}止步于那些能转换成\emph{凸问题}的问题上呢？并非如此。我们知道在人有穷的智慧和有穷的计算能力之下，很难、甚至不可解一些需要巨额计算资源的问题，这些问题，往往都在\emph{非线性优化(Non-linear optimization)}的框架下。但是，这并不妨碍我们分情况讨论我们的解，或者做一些折中的方案。
+
+\begin{multicols}{2}
+第一种情况是局部最优问题。局部最优不再将视野集中在真正的最优解上，它的解与全局最优解的区别就和极小值与最小值的区别一样。局部最优能非常迅速地给出解。
+
+求解这样的问题时，选定合适的初始值至关重要，否则就容易陷入次优解的泥潭中。考虑\autoref{fig:cp1:opmin}的问题形式，在蓝色的曲线需要找到最小值，如果选取一个点梯度下降，有可能有两个收敛结果；红色的曲线代表作二次曲线拟合的结果，这一拟合的过程完全是一个\emph{凸问题}（\emph{最小平方}），由于二次曲线本身是凸/凹的，在它上求最小值是解析的。这一解析解的位置，由紫色的直线标出。由于曲线的不对称（左侧的解更优），这一值更接近左侧的最优解，选定它为初值梯度下降，容易得到左侧最优解的结果。
+
+\begin{figure}[H]
+	\centering
+	\includeMNBgraph[width = 0.9\columnwidth]{cp1_opmin.eps}
+	\DeclareGraphicsExtensions.
+	\caption{求解凸问题对求解非线性问题的帮助。}
+	\label{fig:cp1:opmin}
+\end{figure}
+\end{multicols}
+
+第二种情况是全局最优问题，全局最优方法的显著代价是，牺牲了效率，有时达到指数级复杂度的水平。但是在特定的应用下，例如，对于参数不多的\emph{最坏预期分析(Worst-case analysis or verification)}，求解全局最优是可以理解和接受的，因为局部最优解只能确定系统不安全，却不能保证系统必定是安全的。
+
+\emph{凸优化}在为求解提供初值、为启发式算法求解最优参数分布、为一个复杂的问题确定最优解的边界等问题上，均有应用。后续将详细探讨这些应用，以及它们的理论背景。
