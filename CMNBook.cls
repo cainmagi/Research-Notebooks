@@ -610,10 +610,10 @@ innerbottommargin=5pt]{cBox}
 
 % Creates an environment for each type of theorem and assigns it a theorem text style from the "Theorem Styles" section above and a colored box from above
 \newenvironment{theorem}{\begin{tBox}\begin{theoremeT}}{\end{theoremeT}\end{tBox}}
-\newenvironment{lemma}{\begin{lBox}\begin{lemmaT}}{\end{lemmaT}\end{lBox}}
+\newenvironment{lemma}{\begin{dBox}\begin{lemmaT}}{\end{lemmaT}\end{dBox}}
 \newenvironment{exercise}{\begin{eBox}\begin{exerciseT}}{\hfill{\color{ocre}\tiny\ensuremath{\blacksquare}}\end{exerciseT}\end{eBox}}
 \newenvironment{character}{\begin{eBox}\begin{characterT}}{\hfill{\color{ocre}\tiny\ensuremath{\blacksquare}}\end{characterT}\end{eBox}}
-\newenvironment{definition}{\begin{dBox}\begin{definitionT}}{\end{definitionT}\end{dBox}}	
+\newenvironment{definition}{\begin{lBox}\begin{definitionT}}{\end{definitionT}\end{lBox}}	
 \newenvironment{problem}{\begin{dBox}\begin{problemT}}{\end{problemT}\end{dBox}}	
 \newenvironment{example}{\begin{exampleT}}{\hfill{\tiny\ensuremath{\blacksquare}}\end{exampleT}}		
 \newenvironment{corollary}{\begin{cBox}\begin{corollaryT}}{\end{corollaryT}\end{cBox}}	

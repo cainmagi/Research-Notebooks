@@ -40,7 +40,7 @@
 
 选择任意一组符合上述要求的特定参数集就是\emph{系统参数化}，对于两个等价的参数集，其参数之间可以一一映射。
 
-\subsection{模型空间}
+\subsection{模型空间} \label{sec:c1:modelspace}
 
 与系统参数化无关，我们可以引入一个\emph{抽象空间}，或称为\emph{流形(manifold)}，用其中的每一个\emph{点}代表一个模型$\mathbf{m}$，于是这样的流形记为\emph{模型空间(model space)}~$\mathfrak{M}=\{\mathbf{m}_1,\mathbf{m}_2,\ldots\}$。
 
@@ -50,13 +50,13 @@
   考虑一个\emph{模型空间}$\mathfrak{M}$已经确定了系统参数为$\{\kappa, \mu\}$(分别为体积模量和剪切模量)，可以定义两个模型$\mathbf{m}_1,~\mathbf{m}_2$之间的距离为
   
   \begin{align} \label{fml:c1:m1m2dist}
-    d = \sqrt{{\left(\log \frac{\kappa_2}{\kappa_1}\right)}^2+{\left(\log \frac{\mu_2}{\mu_1}\right)}^2}
+    d = \sqrt{{\left(\log \frac{\kappa_2}{\kappa_1}\right)}^2+{\left(\log \frac{\mu_2}{\mu_1}\right)}^2}.
   \end{align}
   
   若以对数化的系统参数$\{\kappa^{\ast}=\log \kappa, \mu^{\ast}=\log \mu\}$来代替\eqref{fml:c1:m1m2dist}的参数，有：
   
   \begin{align} \label{fml:c1:m1m2distlog}
-    d = \sqrt{{\left(\kappa^{\ast}_2 - \kappa^{\ast}_1\right)}^2+{\left(\mu^{\ast}_2 - \mu^{\ast}_1\right)}^2}
+    d = \sqrt{{\left(\kappa^{\ast}_2 - \kappa^{\ast}_1\right)}^2+{\left(\mu^{\ast}_2 - \mu^{\ast}_1\right)}^2}.
   \end{align}
   
   可见，\eqref{fml:c1:m1m2distlog}是的参数是笛卡尔坐标系，但\eqref{fml:c1:m1m2dist}的不是。
@@ -80,8 +80,8 @@
   设任意两个同属一个模型空间$\mathfrak{M}$，使用同一系统参数$m^{\alpha}$的模型$\mathbf{m}_1,\mathbf{m}_2$，其任意第$i$维的值均满足：
   
   \begin{align} 
-    (\mathbf{m}_1+\mathbf{m}_2)^{\alpha} &= (\mathbf{m}_1)^{\alpha} + (\mathbf{m}_2)^{\alpha} \label{fml:c1:modellinearity1} \\
-    (\lambda \mathbf{m})^{\alpha} &= \lambda(\mathbf{m})^{\alpha}\label{fml:c1:modellinearity2}
+    (\mathbf{m}_1+\mathbf{m}_2)^{\alpha} &= (\mathbf{m}_1)^{\alpha} + (\mathbf{m}_2)^{\alpha}, \label{fml:c1:modellinearity1} \\
+    (\lambda \mathbf{m})^{\alpha} &= \lambda(\mathbf{m})^{\alpha}.\label{fml:c1:modellinearity2}
   \end{align}
   
   这样的的$\mathfrak{M}$称为\emph{线性模型空间(linear model space)}，记为$\mathbb{M}$
@@ -103,8 +103,8 @@
   在一个线性数据空间$\mathbb{D}$内，任意两组测量结果(来自两个仪器)$\mathbf{d}_1,\mathbf{d}_2$，其任意第$i$维的值均满足：
   
   \begin{align} 
-    (\mathbf{d}_1+\mathbf{d}_2)^{\alpha} &= (\mathbf{d}_1)^{\alpha} + (\mathbf{d}_2)^{\alpha} \label{fml:c1:datalinearity1} \\
-    (\lambda \mathbf{d})^{\alpha} &= \lambda(\mathbf{d})^{\alpha}\label{fml:c1:datalinearity2}
+    (\mathbf{d}_1+\mathbf{d}_2)^{\alpha} &= (\mathbf{d}_1)^{\alpha} + (\mathbf{d}_2)^{\alpha}, \label{fml:c1:datalinearity1} \\
+    (\lambda \mathbf{d})^{\alpha} &= \lambda(\mathbf{d})^{\alpha}.\label{fml:c1:datalinearity2}
   \end{align}
   
 \end{character}
@@ -112,3 +112,70 @@
 \subsection{合并流形}
 
 有时候，一个物理系统的输入和输出参数可以清楚地分开，这时使用两个\emph{流形}~$\mathfrak{M},\mathfrak{D}$来描述并无问题。但某些情况下(例如有反馈系统)，不能做到这一点。因此有时我们也用一个合并的\emph{流形}$\mathfrak{X}$来表示整个\emph{参数空间(parameter space)}。这种情况下，其元素(或\emph{点})$\mathbf{x}$被称为一组参数。
+
+\section{信息态}
+
+本节讨论了基于\emph{概率论}定义的\emph{信息态(states of information)}。
+
+\subsection{概率的定义}
+
+考虑一个有限维流形$\mathfrak{X}$，正如在\autoref{sec:c1:modelspace}末尾提到的那样，可以从中定义任意的子集$\mathcal{A},\mathcal{B},\ldots$，我们称$\mathfrak{X},\mathcal{A},\mathcal{B},\ldots,\varnothing$所属的为一个域$F$，且$F$是一个\emph{$\sigma$域($\sigma$Field)}。
+
+\begin{definition}[$\sigma$域]
+  由集合$\Omega$的众子集(例如$\mathcal{A},\mathcal{B},\ldots$)构成的\emph{超集(super set)}，在满足以下条件时称为一个\emph{域(Field)}。
+  
+  \begin{enumerate}
+    \item $\Omega \in F$;
+    \item 若$\mathcal{A} \in F$，则$\bar{\mathcal{A}} \in F$;
+    \item 若$\mathcal{A},\mathcal{B} \in F$，则$\mathcal{A} \cup \mathcal{B} \in F$。
+  \end{enumerate}
+  
+  特别地，如果$F$内所有满足\emph{两两互斥}的集合$\mathcal{A}_i,i=1\rightarrow\infty$，其交集$\mathcal{A}$满足
+  
+  \begin{align} \label{fml:c1:sigmafield}
+    \mathcal{A} = \bigcup_{i=1}^{\infty}\mathcal{A}_i,~~\mathcal{A} \in F,
+  \end{align}
+  
+  则这样的\emph{域}$F$称为\emph{$\sigma$域}。
+\end{definition}
+
+由于满足\emph{$\sigma$域}，若对每个子集关联到一个概率算子$P(\cdot)$，则该算子满足\autoref{cha:c1:probfield}。
+
+\begin{character}[概率算子的基本性质] \label{cha:c1:probfield}
+  \mbox{{}}
+  
+  \begin{enumerate}
+    \item 互斥的集合$\mathcal{A},\mathcal{B}$满足: $P(\mathcal{A}\cup\mathcal{B}) = P(\mathcal{A}) + P(\mathcal{B})$;
+    \item 趋向空集$\varnothing$的集合序列$A_1 \supseteq A_2 \supseteq \ldots$对应地满足$\lim\limits_{i\rightarrow\infty}P(A_i) = 0$;
+    \item 空集$\varnothing$满足$P(\varnothing) = 0$;
+    \item 任意的两集合并集的概率: $P(\mathcal{A}\cup\mathcal{B}) = P(\mathcal{A}) + P(\mathcal{B}) - P(\mathcal{A}\cap\mathcal{B})$.
+  \end{enumerate}
+\end{character}
+
+于是，考量模型$\mathbf{x}\in\mathfrak{X}$(同时也是一组参量)，则可以定义
+
+\begin{definition}[模型集的概率]
+  定义一个多维参量的实函数$f(\mathbf{x})$，则集合$\mathcal{A}$的概率定义为:
+  
+  \begin{align} \label{fml:c1:probmodelset}
+    P(\mathcal{A}) = \int_{\mathbf{x}\in\mathcal{A}}{f(\mathbf{x})\mathrm{d}\mathbf{x}}.
+  \end{align}
+  
+  若$\forall~\mathbf{x},~f(\mathbf{x})>0$且$P(\mathfrak{X})=1$，这样的实函数$f$称为概率密度函数，$P$称为概率或对\emph{标准化测度(normalized measurement)}的概率。
+  
+  若以上条件不满足，这样的实函数称为\emph{相对概率密度函数(relative probability density function)}，$P$称为\emph{相对概率}或对\emph{非标准化测度(nonnormalized measurement)}的概率。
+\end{definition}
+
+例如，对定义域$\{x>0\}$的单变量实区间定义$f=1/x$，显然该函数对全集的积分$P$为$\infty$，故其不能代表概率，但可以用来比较两个区间$\mathcal{A},\mathcal{B}$上对应的积分$P$，这就是其称为\emph{相对概率}的原因。
+
+由于模型$\mathbf{x}$往往有实际的物理意义(例如每个变量都代表一个物理量，具有一个特定的物理\emph{量纲(physical dimensions)})，由于$P$无量纲，通常$f$需要是一个有量纲的函数，并且其量纲可以抵消模型$\mathbf{x}$的量纲。
+
+若对模型$\mathbf{x}$能进行一个坐标变换，使得新坐标系下的模型$\mathbf{x}^{\ast}=\mathbf{x}^{\ast}(\mathbf{x})$，于是有
+
+\begin{align} \label{fml:c1:probchangecoor}
+  P(\mathcal{A}) = \int_{\mathbf{x}\in\mathcal{A}}{f(\mathbf{x})\mathrm{d}\mathbf{x}} = \int_{\mathbf{x}^{\ast}\in\mathcal{A}}{f^{\ast}(\mathbf{x}^{\ast})\mathrm{d}\mathbf{x}^{\ast}} = \int_{\mathbf{x}^{\ast}\in\mathcal{A}}{f(\mathbf{x})\left|\frac{\partial \mathbf{x}}{\partial \mathbf{x}^{\ast}}\right|\mathrm{d}\mathbf{x}^{\ast}}.
+\end{align}
+
+\subsection{概率的解释}
+
+\subsection{概率的性质}
